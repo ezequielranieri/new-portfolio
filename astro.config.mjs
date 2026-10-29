@@ -40,7 +40,7 @@ export default defineConfig({
           draft: z.boolean().default(false),
           translationKey: z.string().optional(),
           lang: z.enum(['en', 'es']).optional(),
-        },
+        } satisfies Parameters<typeof glob>[0]['schema'],
       }),
       glob({
         base: 'src/content',
@@ -60,7 +60,7 @@ export default defineConfig({
           }).optional(),
           featured: z.boolean().default(false),
           order: z.number().default(0),
-        },
+        } satisfies Parameters<typeof glob>[0]['schema'],
       }),
     ],
   },

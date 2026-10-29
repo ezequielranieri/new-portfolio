@@ -1,0 +1,17 @@
+{
+  "name": "Ezequiel Ranieri",
+  "short_name": "ER",
+  "description": "Backend & AI Security Engineer. Secure AI Agents, Non-Human Identity, IAM, distributed systems, capability-based security.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0c",
+  "theme_color": "#0a0a0c",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -12,7 +12,7 @@ function ok(label, cond) {
 }
 
 const { chromium } = await import('playwright-core');
-const { launchOptions } = await import('/home/ez/new-portfolio/odd/responsive/harness/browser.js');
+const launchOptions = () => ({ headless: true, args: ["--no-sandbox"] });;
 const browser = await chromium.launch(launchOptions());
 const page = await browser.newPage();
 await page.goto(new URL('/', BASE).href, { waitUntil: 'load' });

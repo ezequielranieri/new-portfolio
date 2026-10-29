@@ -19,7 +19,7 @@ for (const route of routes) {
     // Test 1: notice appears when saved locale differs from page locale
     {
       const { chromium } = await import('playwright-core');
-      const { launchOptions } = await import('/home/ez/new-portfolio/odd/responsive/harness/browser.js');
+      const launchOptions = () => ({ headless: true, args: ["--no-sandbox"] });;
       const browser = await chromium.launch(launchOptions());
       const page = await browser.newPage();
       await page.setViewportSize({ width: w, height: h });
@@ -49,7 +49,7 @@ for (const route of routes) {
     // Test 2: notice does NOT appear when saved locale matches page locale
     {
       const { chromium } = await import('playwright-core');
-      const { launchOptions } = await import('/home/ez/new-portfolio/odd/responsive/harness/browser.js');
+      const launchOptions = () => ({ headless: true, args: ["--no-sandbox"] });;
       const browser = await chromium.launch(launchOptions());
       const page = await browser.newPage();
       await page.setViewportSize({ width: w, height: h });
@@ -68,7 +68,7 @@ for (const route of routes) {
     // Test 3: bounding-box check against fixed elements
     {
       const { chromium } = await import('playwright-core');
-      const { launchOptions } = await import('/home/ez/new-portfolio/odd/responsive/harness/browser.js');
+      const launchOptions = () => ({ headless: true, args: ["--no-sandbox"] });;
       const browser = await chromium.launch(launchOptions());
       const page = await browser.newPage();
       await page.setViewportSize({ width: w, height: h });

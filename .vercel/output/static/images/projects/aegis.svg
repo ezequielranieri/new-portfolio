@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#1a1a1c"/>
+  <text x="200" y="150" font-family="system-ui, sans-serif" font-size="14" fill="#55555a" text-anchor="middle" dominant-baseline="middle">Aegis — Secure AI Agent Framework</text>
+  <circle cx="200" cy="100" r="30" fill="none" stroke="#3a3a3e" stroke-width="2"/>
+  <path d="M200 85 L200 115 M185 100 L215 100" stroke="#3a3a3e" stroke-width="2" stroke-linecap="round"/>
+</svg>

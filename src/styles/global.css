@@ -2708,7 +2708,7 @@ html[data-notfound-locale='es'] [data-notfound-locale='en'] {
 
 /* Tablet tier (TASK-039): a wider lateral gutter, carousel cards at ~45vw, the
    two-column BLOG grid and the Name + Phone pair. Measured, not guessed — see
-   odd/tasks/responsive-pass.md Step 3. */
+   Step 3. */
 @media (min-width: 640px) and (max-width: 1023.98px) {
   /* Larger gutter than the 20px phone floor, still continuous with the desktop
      clamp at 1024px (3.5vw keeps 640-1023 on the same curve). */

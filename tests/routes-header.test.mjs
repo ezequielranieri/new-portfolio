@@ -13,7 +13,7 @@ import { readFileSync } from 'node:fs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
-const { launchOptions } = require('../odd/responsive/harness/browser');
+const launchOptions = () => ({ headless: true, args: ['--no-sandbox'] });
 
 const BASE = (process.env.URL || 'http://127.0.0.1:4324/').replace(/\/?$/, '/');
 const en = JSON.parse(readFileSync(new URL('../src/i18n/en.json', import.meta.url), 'utf8'));
