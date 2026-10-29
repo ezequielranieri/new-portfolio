@@ -1,0 +1,46 @@
+---
+import ArticlePage from '@/components/pages/ArticlePage.astro';
+import { getBlogPosts, getAdjacentPosts, getTranslationMap } from '@/lib/blog';
+import { renderMarkdown } from '@/lib/markdown';
+import { absoluteUrl } from '@/lib/url';
+
+export async function getStaticPaths() {
+  const posts = await getBlogPosts('en');
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+
+const { prev, next } = await getAdjacentPosts('en', post.slug);
+
+// Get all posts to find the index for the label
+const allPosts = await getBlogPosts('en');
+const postIndex = allPosts.findIndex((p) => p.slug === post.slug);
+
+// Render the article body through the shared remark/rehype pipeline.
+const body = await renderMarkdown((post as any).body ?? '');
+
+// The English slug is shared by its Spanish translation, so when one exists the
+// default switcher behaviour already resolves `/es/blog/<slug>/`. When none
+// exists, send the ES link to the Spanish index and flag the untranslated
+// article so the index can surface its notice.
+const esSlug = (await getTranslationMap())[post.translationKey]?.es;
+const alternates = [{ locale: 'en', url: absoluteUrl(`/blog/${post.slug}/`) }];
+if (esSlug) {
+  alternates.push({ locale: 'es', url: absoluteUrl(`/es/blog/${esSlug}/`) });
+}
+---
+<ArticlePage
+  locale="en"
+  contentLocale="en"
+  post={post}
+  body={body}
+  prev={prev ? { title: prev.title, url: prev.url } : null}
+  next={next ? { title: next.title, url: next.url } : null}
+  postIndex={postIndex}
+  otherLocaleHref={esSlug ? undefined : '/es/blog/#sin-traduccion'}
+  alternates={alternates}
+/>

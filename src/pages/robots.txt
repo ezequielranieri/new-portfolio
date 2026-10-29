@@ -1,0 +1,9 @@
+---
+import { absoluteUrl } from '@/lib/url';
+---
+
+# robots.txt
+User-agent: *
+Allow: /
+
+Sitemap: {absoluteUrl('/sitemap.xml')}

@@ -1,0 +1,227 @@
+{
+  "common": {
+    "backToTop": "BACK TO TOP \u2191"
+  },
+  "nav": {
+    "projects": "Projects",
+    "blog": "Blog",
+    "howIWork": "How I work",
+    "contact": "Contact"
+  },
+  "hero": {
+    "iam": "I am",
+    "role": "AI Security Engineer",
+    "tagline": "Backend & Security Infrastructure for AI Agents",
+    "scroll": "Scroll",
+    "heroName": "Ezequiel"
+  },
+  "brand": {
+    "initials": "ER",
+    "fullName": "Ezequiel Ranieri"
+  },
+  "a11y": {
+    "home": "Home",
+    "skipToContent": "Skip to content",
+    "mainNavigation": "Main navigation",
+    "socialLinks": "Social links",
+    "githubProfile": "GitHub profile",
+    "linkedinProfile": "LinkedIn profile",
+    "xProfile": "X profile",
+    "backToTop": "Back to top",
+    "closeMenu": "Close menu",
+    "menuOpen": "Open menu"
+  },
+  "home": {
+    "meta": {
+      "title": "Ezequiel Ranieri \u2014 AI Security Engineer",
+      "description": "AI Security Engineer. Backend & security infrastructure for AI agents: Secure AI Agents, Non-Human Identity, IAM, distributed systems, capability-based security."
+    },
+    "projects": {
+      "aegis": {
+        "name": "AEGIS",
+        "label": "Secure WASM runtime"
+      },
+      "agentGateway": {
+        "name": "AGENT GATEWAY",
+        "label": "AI agent gateway"
+      },
+      "mettle": {
+        "name": "METTLE",
+        "label": "Agent evaluation & safety"
+      }
+    },
+    "portfolio": {
+      "title": "My Portfolio",
+      "subtitle": "Secure AI Agents \u00b7 Non-Human Identity",
+      "cta": "View all on GitHub"
+    },
+    "blog": {
+      "subtitle": "Engineering notes on secure AI agents",
+      "cta": "VIEW ALL ARTICLES",
+      "emptyHome": "First articles coming soon"
+    },
+    "howIWork": {
+      "subtitle": "Trust infrastructure for autonomous AI systems",
+      "categories": {
+        "principles": {
+          "name": "PRINCIPLES",
+          "items": {
+            "securityFirst": {
+              "name": "Security First",
+              "text": "Threat modeling from day 0. Capability-based security, zero-trust, least privilege by default."
+            },
+            "hexagonalArchitecture": {
+              "name": "Hexagonal Architecture",
+              "text": "Pure domain with zero external dependencies. Ports & adapters for DB, HTTP, gRPC, OIDC."
+            },
+            "testingAsSpecification": {
+              "name": "Isolation by Default",
+              "text": "Tenant isolation enforced in the database with RLS FORCE. Untrusted code runs sandboxed in WASM with metered fuel."
+            },
+            "nativeObservability": {
+              "name": "Verifiable by Construction",
+              "text": "Signed receipts and hash-chained audit. Every agent action leaves verifiable proof."
+            },
+            "simplicityOverCleverness": {
+              "name": "Evaluate Before You Trust",
+              "text": "Declarative specs, authorization oracles and regression gates in CI. Agent behavior is tested, not assumed."
+            },
+            "livingDocumentation": {
+              "name": "Living Documentation",
+              "text": "ADRs for architectural decisions. README as entry point. Comments only for \"why\", never \"what\"."
+            }
+          }
+        },
+        "methodology": {
+          "name": "METHODOLOGY",
+          "items": {
+            "exploreFirst": "I explore first: I understand the existing code, constraints and trade-offs before proposing anything",
+            "specifyExplicitly": "I specify explicitly: ADRs for irreversible decisions, specs for features",
+            "implementInVerticalSlices": "I build in vertical slices: every commit delivers verifiable value",
+            "verifyAutomatically": "I verify automatically: tests, linter, type-check and security scan in CI",
+            "reviewWithJudgment": "I review with judgment: deep review for medium/high risk, structural review for low-risk changes",
+            "deliverInWorkUnitCommits": "I ship per unit of work: tests, docs and code together, Conventional Commits"
+          }
+        },
+        "stack": {
+          "name": "STACK"
+        },
+        "certifications": {
+          "name": "CERTIFICATIONS"
+        }
+      }
+    },
+    "contact": {
+      "subtitle": "Open to projects and collaborations",
+      "description": "Building agents that act on real systems? I can help design the identity, isolation and audit layer. Tell me what you're working on.",
+      "info": {
+        "addressLabel": "Location",
+        "emailLabel": "EMAIL"
+      },
+      "form": {
+        "nameLabel": "NAME",
+        "namePlaceholder": "Your name",
+        "phoneLabel": "PHONE",
+        "phonePlaceholder": "Optional",
+        "emailLabel": "Email",
+        "emailPlaceholder": "you@example.com",
+        "messageLabel": "MESSAGE",
+        "messagePlaceholder": "Tell me about your project",
+        "privacyNotice": "Used only to reply to you. Spam protection processes technical data such as your IP address.",
+        "submit": "SEND MESSAGE",
+        "sending": "SENDING...",
+        "validation": {
+          "nameRequired": "Please enter your name.",
+          "emailInvalid": "Please enter a valid e-mail address.",
+          "messageMinLength": "Please write at least 10 characters.",
+          "captchaRequired": "Please complete the captcha."
+        },
+        "status": {
+          "success": "MESSAGE SENT. I'LL GET BACK TO YOU SOON.",
+          "error": "SOMETHING WENT WRONG. TRY AGAIN OR EMAIL ME DIRECTLY."
+        }
+      },
+      "footer": {}
+    },
+    "menu": {
+      "toggle": "MENU"
+    },
+    "stack": {
+      "languages": {
+        "label": "LANGUAGES",
+        "text": "Go (primary) \u00b7 Rust \u00b7 Python"
+      },
+      "runtimeInfra": {
+        "label": "RUNTIME / INFRA",
+        "text": "Kubernetes \u00b7 NATS \u00b7 PostgreSQL \u00b7 Redis \u00b7 SQLite"
+      },
+      "security": {
+        "label": "SECURITY",
+        "text": "SPIFFE/SPIRE \u00b7 OPA/Cedar \u00b7 sigstore/cosign \u00b7 WASM (wasmtime)"
+      },
+      "observability": {
+        "label": "OBSERVABILITY",
+        "text": "OpenTelemetry \u00b7 Prometheus \u00b7 Grafana \u00b7 Loki \u00b7 Tempo"
+      },
+      "testing": {
+        "label": "TESTING",
+        "text": "testify \u00b7 ginkgo \u00b7 quickcheck \u00b7 testcontainers"
+      },
+      "tooling": {
+        "label": "TOOLING",
+        "text": "sqlc \u00b7 buf/protobuf \u00b7 golangci-lint \u00b7 gofumpt \u00b7 direnv"
+      }
+    },
+    "certifications": {
+      "developingSecureSoftware": {
+        "name": "Developing Secure Software (LFD121)",
+        "issuer": "Linux Foundation \u00b7 2026"
+      },
+      "secureAiMlDrivenSoftwareDevelopment": {
+        "name": "Secure AI/ML-Driven Software Development",
+        "issuer": "Linux Foundation \u00b7 2026"
+      }
+    }
+  },
+  "blog": {
+    "meta": {
+      "title": "Blog \u00b7 Ezequiel Ranieri"
+    },
+    "empty": "No articles published yet.",
+    "backToHome": "BACK TO HOME"
+  },
+  "article": {
+    "labelPrefix": "BLOG / ",
+    "backToBlog": "BACK TO BLOG",
+    "minRead": "{{m}} MIN READ",
+    "updated": "UPDATED {{date}}",
+    "previousArticle": "PREVIOUS ARTICLE",
+    "nextArticle": "NEXT ARTICLE",
+    "allArticles": "ALL ARTICLES",
+    "tableOfContents": "CONTENTS",
+    "articleGithub": "VIEW ON GITHUB \u2197"
+  },
+  "notFound": {
+    "meta": {
+      "title": "404 \u00b7 Ezequiel Ranieri",
+      "description": "Page not found"
+    },
+    "title": "404",
+    "message": "The page you're looking for doesn't exist."
+  },
+  "contactApi": {
+    "rateLimited": "Too many requests. Please try again later.",
+    "forbidden": "Request rejected: unexpected origin.",
+    "captchaFailed": "Captcha verification failed. Please try again.",
+    "invalidJson": "Invalid JSON payload.",
+    "messageTooLong": "Message too long (max 2000 characters)."
+  },
+  "switcher": {
+    "labelEn": "EN",
+    "labelEs": "ES",
+    "switchToEn": "Switch to English",
+    "switchToEs": "Cambiar a espa\u00f1ol",
+    "ariaLabel": "Language switcher",
+    "noticeNoTranslation": "ARTICLE AVAILABLE IN ENGLISH ONLY"
+  }
+}

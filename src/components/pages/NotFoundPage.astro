@@ -1,0 +1,135 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SiteHeader from '@/components/SiteHeader.astro';
+import { url, absoluteUrl } from '@/lib/url';
+import { getTranslator, type Locale } from '@/i18n';
+
+interface Props {
+  locale: Locale;
+  dual?: boolean;
+}
+
+const { locale, dual = false } = Astro.props;
+const t = getTranslator(locale);
+const tEs = getTranslator('es');
+
+// The root 404.html answers every unmatched URL, so in dual mode it carries
+// both locales at once and the CSS picks one. The single-locale /es/404/ route
+// keeps rendering just its own block.
+const blocks: Locale[] = dual ? ['en', 'es'] : [locale];
+
+// Runs while <head> is parsed, before any body content exists, so the correct
+// locale is already in place for the first paint: no flash of English.
+// It only tags <html> and rewrites the title; CSS (global.css) does the
+// revealing, because the body it would have to toggle does not exist yet.
+// Built as one template literal so the i18n scanner treats it as code, not copy.
+const dualHeadScript = `(function () {
+  var p = location.pathname;
+  if (p !== '/es' && p.indexOf('/es/') !== 0) return;
+  var r = document.documentElement;
+  r.lang = 'es';
+  r.setAttribute('data-notfound-locale', 'es');
+  document.title = ${JSON.stringify(tEs('notFound.meta.title'))};
+})();`;
+---
+
+<BaseLayout
+  title={t('notFound.meta.title')}
+  description={t('notFound.meta.description')}
+  ogTitle={t('notFound.meta.title')}
+  ogDescription={t('notFound.meta.description')}
+  ogType="website"
+  twitterCard="summary"
+  locale={locale}
+>
+  {dual ? (
+    <>
+      <div data-notfound-header="en"><SiteHeader locale="en" /></div>
+      <div data-notfound-header="es"><SiteHeader locale="es" /></div>
+    </>
+  ) : (
+    <SiteHeader locale={locale} />
+  )}
+
+  <Fragment slot="head">
+    <meta name="robots" content="noindex" />
+    {dual && <script is:inline set:html={dualHeadScript} />}
+  </Fragment>
+  <main id="main" tabindex="-1">
+  {
+    blocks.map((blockLocale) => {
+      // One translator per block, deliberately named `t` like every other
+      // component so the dictionary-key usage check can see these keys.
+      const t = getTranslator(blockLocale);
+      return (
+        <section
+          class="section error"
+          aria-labelledby={dual ? `error-title-${blockLocale}` : 'error-title'}
+          data-notfound-locale={dual ? blockLocale : undefined}
+        >
+          <div class="error-content">
+            <h1 id={dual ? `error-title-${blockLocale}` : 'error-title'} class="error-code">
+              {t('notFound.title')}
+            </h1>
+            <p class="error-text">{t('notFound.message')}</p>
+            <a href={url('/', undefined, blockLocale)} class="btn">
+              {t('blog.backToHome')}
+            </a>
+          </div>
+        </section>
+      );
+    })
+  }
+  </main>
+</BaseLayout>
+
+<style>
+    /* In dual mode (root 404.html), show only the header for the active locale.
+       The inline head script sets data-notfound-locale="es" before first paint. */
+    [data-notfound-header='es'] {
+      display: none;
+    }
+    :global(html[data-notfound-locale='es']) [data-notfound-header='en'] {
+      display: none;
+    }
+    :global(html[data-notfound-locale='es']) [data-notfound-header='es'] {
+      display: block;
+    }
+  .error-content {
+    max-width: var(--container);
+    margin-inline: auto;
+    padding-inline: var(--page-x);
+    padding-top: calc(var(--header-h) + var(--space-8));
+    text-align: center;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-6);
+    padding-block: var(--space-8);
+  }
+
+  .error-code {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(6rem, 15vw, 12rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin: 0;
+  }
+
+  .error-text {
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    line-height: 1.5;
+    color: var(--text-2);
+    margin: 0;
+  }
+
+  .error .btn {
+    margin-top: var(--space-4);
+    max-width: 16rem;
+  }
+</style>

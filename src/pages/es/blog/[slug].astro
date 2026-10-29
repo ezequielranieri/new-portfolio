@@ -1,0 +1,57 @@
+---
+import ArticlePage from '@/components/pages/ArticlePage.astro';
+import { getBlogListing, getBlogEntries, blogPostPath, getTranslationMap } from '@/lib/blog';
+import { absoluteUrl } from '@/lib/url';
+import { renderMarkdown } from '@/lib/markdown';
+
+export async function getStaticPaths() {
+  const entries = await getBlogEntries('es');
+  // Only generate routes for real Spanish articles. `getBlogEntries` already
+  // swaps in the English post (as a fallback) when the Spanish one is a draft,
+  // so drafts must be rejected both by `fallback` and explicitly by `draft`.
+  const realEntries = entries.filter(
+    (e) => !e.fallback && !e.entry.data.draft
+  );
+  return realEntries.map(({ slug, entry, contentLocale, fallback }) => ({
+    params: { slug },
+    props: { entry, contentLocale, fallback },
+  }));
+}
+
+const { entry, contentLocale } = Astro.props;
+
+const slug = entry.id.slice(entry.id.indexOf('/') + 1);
+
+// prev/next come from the Spanish listing order; each links to its Spanish path.
+const listing = await getBlogListing('es');
+const postIndex = listing.findIndex((item) => item.slug === slug);
+const item = listing[postIndex];
+const post = item.post;
+
+const prevItem = listing[postIndex + 1] ?? null;
+const nextItem = listing[postIndex - 1] ?? null;
+
+const prev = prevItem ? { title: prevItem.post.title, url: blogPostPath('es', prevItem.slug) } : null;
+const next = nextItem ? { title: nextItem.post.title, url: blogPostPath('es', nextItem.slug) } : null;
+
+// Mirror the English article exactly. The English route resolves the body from
+// the enriched post, which never carries the raw markdown body today (the
+// content is still a `<!-- TODO: write the article body -->` placeholder), so
+// both locales render the same empty body. Diverging here would show Spanish
+// readers content the English original does not have.
+const body = await renderMarkdown((post as any).body ?? '');
+---
+<ArticlePage
+  locale="es"
+  contentLocale={contentLocale}
+  post={post}
+  body={body}
+  prev={prev}
+  next={next}
+  postIndex={postIndex}
+  otherLocaleHref={undefined}
+  alternates={[
+    { locale: 'en', url: absoluteUrl(`/blog/${slug}/`) },
+    { locale: 'es', url: absoluteUrl(`/es/blog/${slug}/`) },
+  ]}
+/>

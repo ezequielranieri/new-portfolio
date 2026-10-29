@@ -1,0 +1,3794 @@
+/* ===== SELF-HOSTED FONTS (latin subset, variable) ===== */
+@font-face {
+  font-family: "Syne";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400 800;
+  src:
+    url("/fonts/syne-latin-wght-normal.woff2") format("woff2-variations"),
+    url("/fonts/syne-latin-wght-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src:
+    url("/fonts/inter-latin-wght-normal.woff2") format("woff2-variations"),
+    url("/fonts/inter-latin-wght-normal.woff2") format("woff2");
+}
+
+/* ===== GLOBAL STYLES ===== */
+
+:root {
+  /* ===== DESIGN TOKENS — single source of truth ===== */
+
+  /* Colors */
+  --bg: #0a0a0c;
+  --surface: #111113;
+  --surface-hover: #1a1a1c;
+  --surface-hover-strong: #222226;
+  --line: #1f1f22;
+  --line-strong: #2a2a2d;
+  --text: #ffffff;
+  --text-2: #b5b5ba;
+  --text-3: #8a8a8f;
+  --text-4: #7c7c82;
+  --text-5: #888890;
+
+  /* Typography */
+  --font-display: "Syne", "Unbounded", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+
+  /* Layout rhythm — shared so fixed elements align on the same margins */
+  --page-x: clamp(1.25rem, 3.5vw, 3.5rem);
+  /* Lateral zone reserved for the fixed overlays (logo, nav, social icons,
+     SCROLL indicator / BACK TO TOP). Section content is centred in the viewport
+     but never enters this zone, so it can never collide with them. */
+  --gutter: clamp(5rem, 8vw, 7.5rem);
+  --container: 68.75rem; /* 1100px */
+  --section-top: 6rem; /* clear space below the fixed header */
+  --gap-header-body: 3.5rem; /* space between section head and body */
+  --header-top: 2.25rem;
+  --bottom-pad: 3.25rem;
+  /* Fixed-header footprint = top padding + logo line box. Used to keep the
+     hero optically centered in the free area BELOW the header. */
+  --header-h: calc(var(--header-top) + 2.4rem);
+
+  /* Type scale */
+  --title-size: clamp(2rem, 4.5vw, 4.5rem);
+  --title-line: 1;
+  --title-tracking: -0.01em;
+  /* 12px floor: below this, uppercase micro-copy with wide tracking stops being
+     legible on low-DPI screens, which is where most of it is read. */
+  --micro-size: 0.75rem;
+  --micro-weight: 500;
+  --micro-tracking: 0.2em;
+  --body-size: 0.95rem;
+  --body-line: 1.6;
+  --small-size: 0.85rem;
+  --small-line: 1.55;
+
+  /* Spacing scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+
+  /* Screen dimensions */
+  --screen-gap: 1rem;
+
+  /* Motion */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur: 250ms;
+  --transition-fast: 150ms var(--ease);
+  --transition-normal: 250ms var(--ease);
+
+  /* Z-index */
+  --z-fixed: 100;
+  --z-modal: 200;
+
+  /* Component tokens */
+  --btn-pad-y: 1rem;
+  --btn-pad-x: 3rem;
+  --btn-font-size: var(--micro-size);
+  --card-border: var(--line);
+  --input-line: var(--line-strong);
+
+  /* ===== CHROME / HOLOGRAPHIC ACCENT (single iridescent accent) ===== */
+  /* Tuned metallic gradient — bright specular band + deeper blues, pastel saturation.
+     Every stop keeps >= 7:1 contrast against --bg (#0a0a0c). */
+  --chrome-white: #ffffff;
+  --chrome-ice: #dbe8ff;
+  --chrome-cyan: #9ec3ff;
+  --chrome-lilac: #e3c9ff;
+  --chrome-pink: #ffb8ec;
+  --chrome-blue: #a9bcff;
+  --chrome-aqua: #eaf1ff;
+
+  /* Full gradient — 110° angle, metallic specular band + deeper blues */
+  --chrome-gradient: linear-gradient(
+    110deg,
+    var(--chrome-white) 0%,
+    var(--chrome-ice) 10%,
+    var(--chrome-cyan) 24%,
+    var(--chrome-cyan) 36%,
+    var(--chrome-white) 46%,
+    var(--chrome-lilac) 56%,
+    var(--chrome-pink) 68%,
+    var(--chrome-blue) 80%,
+    var(--chrome-aqua) 90%,
+    var(--chrome-white) 100%
+  );
+
+  /* Chrome text utility — iridescent foil text */
+  --chrome-text-bg-size: 250% 100%;
+  --chrome-text-duration: 12s;
+  --chrome-text-ease: ease-in-out;
+
+  /* Spotlight for cards — soft chrome glow */
+  --spotlight-size: 240px;
+  --spotlight-color: rgba(219, 232, 255, 0.10);
+}
+
+/* ===== RESET ===== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  color-scheme: dark;
+  overflow-x: hidden; /* Prevent horizontal scroll on document */
+}
+
+/* Snap guard: when a section exceeds the viewport, switch to proximity
+   so wheel snapping doesn't get stuck on the oversized section's edge. */
+html[data-snap="loose"] {
+  scroll-snap-type: y proximity;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--body-size);
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--bg);
+  min-height: 100svh;
+  overflow-x: hidden;
+  text-rendering: geometricPrecision;
+}
+
+/* Focus visible for keyboard navigation */
+:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 4px;
+}
+
+/* Selection */
+::selection {
+  background: var(--text);
+  color: var(--bg);
+}
+
+/* Scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) var(--bg);
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border: 2px solid var(--bg);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--text-3);
+}
+
+/* Visually hidden utility */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ===== CHROME / HOLOGRAPHIC UTILITIES ===== */
+/* Iridescent foil text — background-clip text with animated gradient */
+.chrome-text {
+  background: var(--chrome-gradient);
+  background-size: var(--chrome-text-bg-size);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: chrome-shift var(--chrome-text-duration) var(--chrome-text-ease) infinite alternate;
+  will-change: background-position;
+}
+
+/* Fallback for browsers without background-clip: text */
+@supports not (background-clip: text) {
+  .chrome-text {
+    background: none;
+    -webkit-background-clip: initial;
+    background-clip: initial;
+    color: var(--chrome-white);
+    -webkit-text-fill-color: initial;
+    animation: none;
+  }
+}
+
+/* Chrome line — 1px horizontal gradient line with slow shift */
+.chrome-line {
+  height: 1px;
+  width: 100%;
+  background: var(--chrome-gradient);
+  background-size: var(--chrome-text-bg-size);
+  animation: chrome-shift var(--chrome-text-duration) var(--chrome-text-ease) infinite alternate;
+  will-change: background-position;
+}
+
+/* Chrome line vertical — 1px vertical gradient line with slow shift */
+.chrome-line--v {
+  width: 1px;
+  height: 100%;
+  background: var(--chrome-gradient);
+  background-size: 100% 250%;
+  animation: chrome-shift-vertical var(--chrome-text-duration) var(--chrome-text-ease) infinite alternate;
+  will-change: background-position;
+}
+
+/* Chrome border on hover/focus — gradient border via pseudo-element */
+.chrome-border-hover {
+  position: relative;
+}
+.chrome-border-hover::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  background: var(--chrome-gradient);
+  background-size: var(--chrome-text-bg-size);
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+  pointer-events: none;
+  border-radius: inherit;
+  z-index: -1;
+}
+.chrome-border-hover:hover::before,
+.chrome-border-hover:focus-visible::before {
+  opacity: 1;
+}
+@media (hover: none) {
+  .chrome-border-hover:hover::before {
+    opacity: 0;
+  }
+  .chrome-border-hover:active::before,
+  .chrome-border-hover:focus-visible::before {
+    opacity: 1;
+  }
+}
+
+/* Chrome shift animation — slow diagonal sweep */
+@keyframes chrome-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Respect reduced motion — pause animation, show static gradient at mid-position */
+@media (prefers-reduced-motion: reduce) {
+  .chrome-text,
+  .chrome-line,
+  .chrome-border-hover::before {
+    animation: none;
+    background-position: 50% 50%;
+  }
+}
+
+/* Pause animation when tab is hidden (via content-visibility) */
+.chrome-text,
+.chrome-line {
+  /* content-visibility: auto on parent containers will auto-pause */
+}
+
+/* Forced colors mode — plain text for accessibility */
+@media (forced-colors: active) {
+  .chrome-text {
+    background: none;
+    -webkit-background-clip: initial;
+    background-clip: initial;
+    color: CanvasText;
+    -webkit-text-fill-color: CanvasText;
+    animation: none;
+  }
+  .chrome-line {
+    background: CanvasText;
+    animation: none;
+  }
+  .chrome-border-hover::before {
+    background: CanvasText;
+  }
+}
+
+/* ===== FIXED HEADER ===== */
+.fixed-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--header-top) var(--page-x) 0;
+  z-index: var(--z-fixed);
+  background: transparent;
+  transition: background var(--transition-normal), border-color var(--transition-normal);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fixed-header {
+    transition: none;
+  }
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 2.4rem;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.nav {
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-link {
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  font-weight: var(--micro-weight);
+  letter-spacing: var(--micro-tracking);
+  text-transform: uppercase;
+  color: var(--text-3);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--chrome-gradient);
+  background-size: var(--chrome-text-bg-size);
+  -webkit-mask: linear-gradient(#fff, #fff);
+  mask: linear-gradient(#fff, #fff);
+  -webkit-mask-composite: exclude;
+  mask-composite: exclude;
+  animation: chrome-shift var(--chrome-text-duration) var(--chrome-text-ease) infinite alternate;
+  will-change: background-position;
+  transition: width var(--transition-fast);
+}
+
+@media (hover: hover) {
+  .nav-link:hover,
+  .nav-link:focus-visible {
+    color: var(--text);
+  }
+
+  .nav-link:hover::after,
+  .nav-link:focus-visible::after {
+    width: 100%;
+  }
+}
+
+.nav-link.active {
+  color: var(--text);
+}
+
+.nav-link.active::after {
+  width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-link::after {
+    animation: none;
+    background-position: 50% 50%;
+  }
+}
+
+/* ===== HEADER END / LANGUAGE SWITCHER ===== */
+.header-end {
+  display: flex;
+  align-items: center;
+}
+
+.header-switcher {
+  display: flex;
+  align-items: center;
+  margin-right: 1.5rem;
+  padding-right: 1.5rem;
+  border-right: 1px solid var(--line);
+}
+
+.language-switcher {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.lang-link {
+  position: relative;
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  font-weight: var(--micro-weight);
+  letter-spacing: var(--micro-tracking);
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--text-3);
+  transition: color var(--transition-fast);
+}
+
+.lang-label {
+  position: relative;
+}
+
+/* Active locale: white with the 1px chrome underline, drawn on the label
+   text (not the 44px touch target) so it sits 4-6px below the baseline. */
+.lang-link[aria-current='true'] {
+  color: var(--text);
+}
+
+.lang-link[aria-current='true'] .lang-label::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  height: 1px;
+  background: var(--chrome-gradient);
+  background-size: var(--chrome-text-bg-size);
+  -webkit-mask: linear-gradient(#fff, #fff);
+  mask: linear-gradient(#fff, #fff);
+  -webkit-mask-composite: exclude;
+  mask-composite: exclude;
+  animation: chrome-shift var(--chrome-text-duration) var(--chrome-text-ease) infinite alternate;
+  will-change: background-position;
+}
+
+@media (hover: hover) {
+  .lang-link:hover,
+  .lang-link:focus-visible {
+    color: var(--text);
+  }
+}
+
+.lang-link:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lang-link[aria-current='true'] .lang-label::after {
+    animation: none;
+    background-position: 50% 50%;
+  }
+}
+
+.lang-sep {
+  width: 1px;
+  height: 0.75em;
+  background: var(--line-strong);
+}
+
+/* ===== PAGE-LEVEL SWITCHER & BLOG NOTICE ===== */
+/* Right-aligned switcher at the top of standalone pages (e.g. the blog index). */
+.page-switcher {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--space-4);
+}
+
+/* Article header top row: index label on the left, switcher on the right. */
+.article-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+/* Notice on the Spanish blog index for articles that only exist in English. */
+.blog-notice {
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  font-weight: var(--micro-weight);
+  letter-spacing: var(--micro-tracking);
+  text-transform: uppercase;
+  color: var(--text-3);
+  border: 1px solid var(--line-strong);
+  padding: var(--space-2) var(--space-4);
+  margin-bottom: var(--space-6);
+  scroll-margin-top: calc(var(--header-h) + 1rem);
+}
+
+.blog-notice[hidden] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lang-link[aria-current='true'] .lang-label::after {
+    animation: none;
+    background-position: 50% 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-link::after {
+    animation: none;
+    background-position: 50% 50%;
+  }
+}
+
+/* ===== FIXED SOCIAL ICONS (bottom-left) ===== */
+.fixed-social {
+  position: fixed;
+  bottom: var(--bottom-pad);
+  left: var(--page-x);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  z-index: var(--z-fixed);
+  pointer-events: none;
+}
+
+.fixed-social > * {
+  pointer-events: auto;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  color: var(--text);
+  opacity: 0.9;
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+.social-link svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.social-link:hover,
+.social-link:focus-visible {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+.social-link:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 4px;
+}
+
+/* ===== FIXED SCROLL INDICATOR (bottom-right) ===== */
+.fixed-scroll {
+  position: fixed;
+  bottom: var(--bottom-pad);
+  right: var(--page-x);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  z-index: var(--z-fixed);
+  visibility: visible;
+  transition: opacity 200ms ease, visibility 0s linear 0s, pointer-events 200ms ease;
+}
+
+.fixed-scroll.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 200ms ease, visibility 0s linear 200ms, pointer-events 200ms ease;
+}
+
+.scroll-text {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.scroll-line {
+  position: relative;
+  width: 1px;
+  height: 40px;
+  overflow: hidden;
+  background: var(--line-strong);
+  display: block;
+  flex: none;
+}
+
+.scroll-line::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #ffffff, #b9f3ff 45%, #e3c9ff 75%, #ffb8ec);
+  transform: translateY(-100%);
+  animation: scroll-line-run 2.4s cubic-bezier(.5, 0, .2, 1) infinite;
+}
+
+@keyframes scroll-line-run {
+  0% {
+    transform: translateY(-100%);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+
+/* ===== SECTIONS — shared base ===== */
+.section {
+  min-height: 100svh;
+  width: 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  position: relative;
+}
+
+/* Shared lateral container: centred in the viewport, but never closer to the
+   edge than --gutter, the zone reserved for the fixed overlays. */
+.section-content,
+.portfolio-inner,
+.blog-content,
+.hiw-content,
+.contact-content {
+  width: min(var(--container), 100% - 2 * var(--gutter));
+  margin-inline: auto;
+}
+
+.section-head,
+.blog-header,
+.hiw-header,
+.contact-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.section-title,
+.blog-title,
+.hiw-title,
+.contact-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--title-size);
+  line-height: var(--title-line);
+  letter-spacing: var(--title-tracking);
+  text-transform: uppercase;
+  color: var(--text);
+  margin: 0;
+}
+
+.section-subtitle,
+.blog-subtitle,
+.hiw-subtitle,
+.contact-subtitle {
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  font-weight: 400;
+  letter-spacing: var(--micro-tracking);
+  line-height: 1.5;
+  text-transform: uppercase;
+  color: var(--text-3);
+  max-width: 22rem;
+  text-align: right;
+  margin: 0;
+}
+
+/* Responsive: mobile stack for section head */
+@media (max-width: 768px) {
+  .section-head,
+  .hiw-header,
+  .contact-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .section-subtitle,
+  .hiw-subtitle,
+  .contact-subtitle {
+    text-align: left;
+    max-width: none;
+  }
+}
+
+/* ===== SECTION 1: HERO (exception — huge name with anchored labels) ===== */
+.hero {
+  min-height: 100svh;
+  display: grid;
+  grid-template-rows: 1fr;
+  place-items: center;
+  /* Top padding equal to the header footprint shifts the centred row down by
+     half of it, so the name sits in the middle of the space under the header. */
+  padding: var(--header-h) var(--page-x) 0;
+  text-align: center;
+}
+
+/* One positioning context: the labels are anchored to the name, not the viewport */
+.hero-container {
+  position: relative;
+  width: max-content;
+  max-width: 100%;
+}
+
+.hero-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  /* Tuned by measurement: Syne ExtraBold "EZEQUIEL" advances 8.585em; with
+     letter-spacing -0.01em over 9 characters that is ~8.50em, so 7.95vw
+     spans ~67.5% of the viewport at 1440px (target was 65-70%). */
+  font-size: clamp(2.5rem, 7.95vw, 10rem);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--text);
+  margin: 0;
+}
+
+.hero-name-text {
+  display: block;
+  /* Chrome foil text — iridescent foil on the hero name */
+  /* padding-bottom prevents clipping of Q tail from background-clip */
+  padding-bottom: 0.08em;
+}
+
+/* Mobile: slower animation (18s), pauses when off-screen via content-visibility */
+@media (max-width: 1023.98px) {
+  .hero-name-text.chrome-text {
+    animation-duration: 18s;
+    content-visibility: auto;
+  }
+}
+
+/* "I AM" — above the left part of the name.
+   Syne 800 metrics (measured): box top → cap top = 0.165em, so
+   bottom: 83.5% puts the label 0.5rem above the cap height. */
+.hero-label {
+  position: absolute;
+  left: 8%;
+  bottom: calc(83.5% + 0.5rem);
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  font-weight: var(--micro-weight);
+  letter-spacing: var(--micro-tracking);
+  text-transform: uppercase;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+
+/* Subtitle — below the name, right-aligned with the end of "EZEQUIEL".
+   Box top → baseline = 0.825em, so top: 82.5% + 0.75rem sits 0.75rem under
+   the baseline no matter the rendered font size. */
+.hero-role {
+  position: absolute;
+  right: 0;
+  top: calc(82.5% + 0.75rem);
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-4);
+  white-space: nowrap;
+}
+
+/* ===== SECTION 2: PORTFOLIO (exception — 3 cards with title overlap) ===== */
+.portfolio {
+  /* Card metrics. --card-h-center is the CENTRE card height and drives the
+     title overlap band, so every card clears the title no matter its own height.
+     Side cards were shrunk ~8% (was clamp(10rem, 17vw, 16.25rem)) to open
+     breathing room below the fixed header. */
+  --card-w: clamp(9.375rem, 15.5vw, 15rem);
+  --card-w-center: calc(var(--card-w) * 1.1);
+  --card-h-center: calc(var(--card-w-center) * 4 / 3);
+  --card-pad: 1.25rem;
+  --card-gap: clamp(1rem, 2vw, 2rem);
+  --title-band: calc(var(--card-h-center) * 0.15);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100svh;
+  /* Asymmetric vertical padding: the top gutter clears the fixed header by at
+     least 6rem, and the group stays vertically centred in the remaining space
+     between this gutter and the bottom breathing room. */
+  padding: calc(var(--header-h) + var(--section-top)) 0 clamp(3rem, 8vh, 6rem);
+}
+
+.portfolio-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Bottom-aligned row: the taller centre card starts higher */
+.project-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: var(--card-gap);
+  width: 100%;
+}
+
+.project-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: var(--card-w);
+  aspect-ratio: 4 / 5;
+  /* Bottom padding reserves the title band so no card text sits under the title */
+  padding: var(--card-pad) var(--card-pad) calc(var(--title-band) + 0.75rem);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 0;
+  text-decoration: none;
+  color: inherit;
+  transition: background-color var(--transition-normal), border-color var(--transition-normal);
+}
+
+.project-card-inner {
+  transition: transform var(--transition-fast);
+  /* No transform on hover - keeping layout stable */
+}
+
+.project-card--featured {
+  width: var(--card-w-center);
+  aspect-ratio: 3 / 4;
+}
+
+.project-card:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 4px;
+}
+
+/* Hover/focus styles — only on devices that support hover */
+@media (hover: hover) {
+  .project-card:hover,
+  .project-card:focus-visible {
+    background-color: var(--surface-hover);
+    border-color: var(--line-strong);
+  }
+
+  .project-card:hover .project-card-arrow,
+  .project-card:focus-visible .project-card-arrow {
+    color: var(--text);
+    transform: translate(3px, -3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-card {
+    transition: none;
+  }
+  .project-card:hover .project-card-arrow,
+  .project-card:focus-visible .project-card-arrow {
+    transform: none;
+  }
+}
+
+.project-card-art {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  padding: 1rem 0;
+}
+
+.project-card-art svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* The illustrations dim by default and brighten to full opacity on hover.
+   The opacities live on presentation attributes so a CSS rule can override them. */
+.project-card-art svg [opacity] {
+  transition: opacity var(--transition-normal);
+}
+
+.project-card:hover .project-card-art svg [opacity],
+.project-card:focus-visible .project-card-art svg [opacity] {
+  opacity: 1;
+}
+
+/* SVG strokes: subtle chrome stroke on hover (only if contrast allows) */
+.project-card:hover .project-card-art svg,
+.project-card:focus-visible .project-card-art svg {
+  stroke: var(--chrome-cyan);
+  stroke-opacity: 0.3;
+}
+
+.project-card:hover .project-card-art svg [opacity],
+.project-card:focus-visible .project-card-art svg [opacity] {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-card:hover .project-card-inner,
+  .project-card:focus-visible .project-card-inner {
+  transition: transform var(--transition-fast);
+    transform: translateY(-6px);
+  }
+}
+
+@media (hover: none) {
+  .project-card:active .project-card-inner {
+  transition: transform var(--transition-fast);
+    transform: translateY(-2px);
+  }
+  .project-card:active::before {
+    opacity: 0.6;
+  }
+}
+
+.project-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.project-card-name {
+  font-family: var(--font-display);
+  /* 800 made the "S" in AEGIS read like a "9" at card size; lighter weight,
+     slightly larger size and a touch of tracking keep the same family. */
+  font-weight: 700;
+  font-size: 1.2rem;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.project-card--featured .project-card-name {
+  font-size: 1.35rem;
+}
+
+/* The title/caption band is the same on mobile but the cards are small:
+   keep the flagship name inside its content box (1 line per word). */
+@media (max-width: 640px) {
+  .project-card--featured .project-card-name {
+    font-size: 1.2rem;
+  }
+}
+
+.project-card-label {
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  color: var(--text-4);
+}
+
+.portfolio-caption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+/* Negative top margin pulls the title over the bottom 15% of the centre card.
+   z-index keeps it above the cards, which create stacking contexts on hover. */
+.portfolio-title {
+  position: relative;
+  z-index: 2;
+  margin-top: calc(var(--title-band) * -1);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--title-size);
+  line-height: var(--title-line);
+  letter-spacing: var(--title-tracking);
+  text-transform: uppercase;
+  color: var(--text);
+  white-space: nowrap;
+  text-align: center;
+  pointer-events: none;
+}
+
+.portfolio-subtitle {
+  margin-top: 0.75rem;
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  font-weight: 400;
+  letter-spacing: var(--micro-tracking);
+  text-transform: uppercase;
+  color: var(--text-3);
+  white-space: nowrap;
+  text-align: center;
+}
+
+/* Unified button component — flat, no radius, micro uppercase text */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--btn-pad-y) var(--btn-pad-x);
+  background: var(--surface-hover);
+  border: none;
+  border-radius: 0;
+  font-family: var(--font-body);
+  font-size: var(--btn-font-size);
+  font-weight: 500;
+  /* Explicit: the UA `font` shorthand on <button> resets line-height to
+     `normal`, which would make the submit button shorter than the <a> ones. */
+  line-height: 1.5;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  text-decoration: none;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .btn:hover,
+  .btn:focus-visible {
+    background-color: var(--surface-hover-strong);
+    color: var(--text);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn {
+    transition: none;
+  }
+}
+
+.portfolio-cta {
+  margin-top: clamp(1.5rem, 3vh, 2.25rem);
+}
+
+/* ===== SECTION 3: BLOG (editorial list — reference implementation) ===== */
+.blog {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100svh;
+  /* Top clearance tightened by 1rem to recover the height lost by the CTA
+     margin change (2.5rem -> 1.5rem). */
+  padding: calc(var(--header-h) + var(--section-top) - 1rem) 0 clamp(0.75rem, 2vh, 3rem);
+}
+
+.blog-list {
+  margin-top: var(--gap-header-body);
+}
+
+/* Each row is a link; hairlines separate them (top on the first, bottom on all). */
+.blog-row {
+  display: grid;
+  grid-template-columns: 16rem 1fr auto;
+  column-gap: 1.5rem;
+  align-items: start;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--line);
+  color: inherit;
+  text-decoration: none;
+  overflow: hidden;
+  /* Apply negative margin + padding always so hover background extends beyond container */
+  margin-inline: calc(-1 * var(--space-6));
+  padding-inline: var(--space-6);
+  transition: background-color var(--transition-normal), border-bottom-color var(--transition-normal);
+}
+
+.blog-row:first-child {
+  border-top: 1px solid var(--line);
+}
+
+/* Hover/focus styles — only on devices that support hover */
+@media (hover: hover) {
+  .blog-row:hover,
+  .blog-row:focus-visible {
+    background-color: var(--surface);
+    border-bottom-color: var(--line-strong);
+  }
+
+  .blog-row:hover .blog-row-title,
+  .blog-row:focus-visible .blog-row-title {
+    color: var(--text);
+  }
+
+  .blog-row:hover .blog-row-arrow,
+  .blog-row:focus-visible .blog-row-arrow {
+    color: var(--text);
+    transform: translate(3px, -3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blog-row {
+    transition: none;
+  }
+  .blog-row:hover .blog-row-arrow,
+  .blog-row:focus-visible .blog-row-arrow {
+    transform: none;
+  }
+}
+
+.blog-row-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.blog-row-index {
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  font-weight: 400;
+  letter-spacing: var(--micro-tracking);
+  color: var(--text-3);
+}
+
+.blog-row-date {
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-4);
+  white-space: nowrap;
+}
+
+.blog-row-tag {
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+
+.blog-row-lang {
+  display: inline-block;
+  margin-bottom: var(--space-2);
+}
+
+/* Spanish: EN chip positioned absolutely so it doesn't add vertical space to the row */
+[lang="es"] .blog-row-body {
+  position: relative;
+}
+
+[lang="es"] .blog-row-lang {
+  position: absolute;
+  top: -1.2em;
+  right: 0;
+  margin: 0;
+}
+
+[lang="es"] .blog-row-body:has(.blog-row-lang) {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.blog-row-body {
+  min-width: 0;
+}
+
+.blog-row-title {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: clamp(1.15rem, 1.8vw, 1.6rem);
+  line-height: 1.2;
+  color: var(--text);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  transition: color var(--transition-normal);
+}
+
+.blog-row-excerpt {
+  font-family: var(--font-body);
+  font-size: var(--body-size);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--text-4);
+  margin: 0.5rem 0 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.blog-row-arrow {
+  justify-self: end;
+  align-self: start;
+  display: inline-flex;
+  color: var(--text-3);
+  line-height: 0;
+  transition: color var(--transition-normal), transform var(--transition-normal);
+}
+
+.blog-cta {
+  margin-top: 1.5rem;
+}
+
+/* Short viewports (e.g. 1366x650, 1024x600): the full desktop rhythm does not
+   fit one screen once the rows keep their 1.5rem polish, so the shared top
+   clearance and the BLOG margins tighten here instead. Row padding stays 1.5rem
+   so the index and the excerpt never touch the hairlines, and the section keeps
+   a 3rem bottom padding so the button always clears the viewport edge by at
+   least 3rem. */
+@media (max-height: 780px) and (min-width: 769px) {
+  :root {
+    --section-top: 3rem;
+  }
+
+  .blog {
+    padding-bottom: 3rem;
+  }
+
+  .blog-list {
+    margin-top: 0.5rem;
+  }
+
+  .blog-cta {
+    margin-top: 0.5rem;
+  }
+
+  /* The three meta labels already have 1.5 line-height leading between them. */
+  .blog-row-meta {
+    gap: 0;
+  }
+
+  .btn {
+    padding: 0.65rem 2.5rem;
+  }
+}
+
+@media (max-height: 620px) and (min-width: 769px) {
+  :root {
+    --section-top: 2rem;
+  }
+}
+
+/* ===== SECTION 4: HOW I WORK (tabbed menu / accordion) ===== */
+.how-i-work {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100svh;
+  /* Top gutter clears the fixed header by at least 6rem; the menu + panel pair
+     is centred in the remaining space below it. */
+  padding: calc(var(--header-h) + var(--section-top)) 0 clamp(1rem, 3vh, 3rem);
+}
+
+.hiw-layout {
+  display: grid;
+  /* minmax(0, …) drops the automatic min-content floor of a bare fr track:
+     without it the menu's longest word pins the 5fr track wide and the 7fr
+     panel collapses to roughly 1:1. */
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 4rem;
+  align-items: start;
+  margin-top: var(--gap-header-body);
+}
+
+/* --- Left: tab menu (buttons stack; hairlines separate rows) --- */
+.hiw-menu {
+  display: block;
+}
+
+.hiw-tab {
+  display: grid;
+  /* Two tracks: index | name. minmax(0, 1fr) drops the bare-fr min-content
+     floor so the name can shrink instead of forcing the row wider than the
+     menu. */
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
+  column-gap: 1.25rem;
+  width: 100%;
+  padding: 1.25rem 0;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--card-border);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.hiw-tab:first-child {
+  border-top: 1px solid var(--card-border);
+}
+
+.hiw-tab-index {
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  letter-spacing: var(--micro-tracking);
+  color: var(--text-3);
+}
+
+.hiw-tab-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  /* The menu column is a fixed 431.6px (content caps at 1100px), so after the
+     index track and gap the name has ~396.7px. "CERTIFICATIONS" renders
+     ~14.33px per px of font size (~344px at this 24px cap), so it stays inside
+     the row even with the +12px active shift. */
+  font-size: clamp(1rem, 1.9vw, 1.5rem);
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--text-4);
+  min-width: 0;
+  overflow: hidden;
+  transition: color var(--transition-normal), transform var(--transition-normal);
+}
+
+/* Selected + keyboard focus are always highlighted (the name only). */
+.hiw-tab[aria-selected="true"] .hiw-tab-name,
+.hiw-tab:focus-visible .hiw-tab-name {
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  transform: translateX(12px);
+  /* Chrome foil text — static, no animation to avoid multiple animated elements */
+  background: var(--chrome-gradient);
+  background-size: var(--chrome-text-bg-size);
+  -webkit-background-clip: text;
+  background-clip: text;
+  background-position: 50% 50%;
+}
+
+/* Pointer hover is gated so touch devices never get a stuck hover state. */
+@media (hover: hover) and (pointer: fine) {
+  .hiw-tab:hover .hiw-tab-name {
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    transform: translateX(12px);
+    /* Chrome foil text — static on hover */
+    background: var(--chrome-gradient);
+    background-size: var(--chrome-text-bg-size);
+    -webkit-background-clip: text;
+    background-clip: text;
+    background-position: 50% 50%;
+  }
+}
+
+.hiw-tab:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 4px;
+}
+
+/* --- Right: panel --- */
+.hiw-panel {
+  height: clamp(320px, 48svh, 460px);
+  border-left: 1px solid var(--card-border);
+  padding-left: 3rem;
+}
+
+/* Declared explicitly so [hidden] is never overridden by the panel styles. */
+.hiw-panel[hidden] {
+  display: none;
+}
+
+@keyframes hiw-fade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.hiw-panel:not([hidden]) {
+  animation: hiw-fade var(--transition-normal);
+}
+
+.hiw-panel:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 4px;
+}
+
+/* --- Panel content: multi-column grids (6 items -> 3 per column) --- */
+.hiw-principles,
+.hiw-steps,
+.hiw-stack {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 3rem;
+  row-gap: 1.5rem;
+}
+
+.hiw-principle {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.hiw-principle-name {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--body-size);
+  color: var(--text);
+  line-height: 1.35;
+}
+
+.hiw-principle-text {
+  font-family: var(--font-body);
+  font-size: var(--small-size);
+  font-weight: 400;
+  line-height: var(--small-line);
+  color: var(--text-2);
+}
+
+.hiw-step {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 0.75rem;
+  align-items: baseline;
+}
+
+.hiw-step-num {
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  letter-spacing: var(--micro-tracking);
+  color: var(--text-3);
+}
+
+.hiw-step-text {
+  font-family: var(--font-body);
+  font-size: var(--small-size);
+  font-weight: 400;
+  line-height: var(--small-line);
+  color: var(--text-2);
+}
+
+.hiw-stack-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.hiw-stack-label {
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  font-weight: 500;
+  letter-spacing: var(--micro-tracking);
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.hiw-stack-items {
+  font-family: var(--font-body);
+  font-size: var(--small-size);
+  font-weight: 400;
+  line-height: var(--small-line);
+  color: var(--text-2);
+}
+
+.hiw-certs {
+  display: flex;
+  flex-direction: column;
+}
+
+.hiw-cert {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.hiw-cert:first-child {
+  border-top: 1px solid var(--card-border);
+}
+
+.hiw-cert-name {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--body-size);
+  color: var(--text);
+  line-height: 1.35;
+}
+
+.hiw-cert-issuer {
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  letter-spacing: var(--micro-tracking);
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+/* Short viewports (e.g. 1366x650): compress the vertical rhythm so the header
+   row and panel stay inside one viewport with no internal scroll. Scoped to
+   desktop widths so it never fights the mobile accordion. */
+@media (max-height: 780px) and (min-width: 769px) {
+  .hiw-tab {
+    padding: 0.75rem 0;
+  }
+
+  .hiw-principle-text,
+  .hiw-step-text,
+  .hiw-stack-items {
+    font-size: 0.8rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hiw-panel:not([hidden]) {
+    animation: none;
+  }
+
+  .hiw-tab[aria-selected="true"] .hiw-tab-name,
+  .hiw-tab:focus-visible .hiw-tab-name {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) and (hover: hover) and (pointer: fine) {
+  .hiw-tab:hover .hiw-tab-name {
+    transform: none;
+  }
+}
+
+/* Tighten vertical spacing in short viewports so the last line keeps 2rem
+   of clearance above the viewport bottom. */
+@media (max-height: 700px) {
+  .how-i-work {
+    padding-top: calc(var(--header-h) + 2rem);
+    padding-bottom: 1rem;
+  }
+
+  .hiw-layout {
+    gap: 2rem;
+    margin-top: 1rem;
+  }
+
+  .hiw-panel {
+    padding-left: 1.5rem;
+  }
+}
+
+/* ===== SECTION 5: CONTACT ===== */
+.contact {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100svh;
+  /* Top gutter clears the fixed header by at least 6rem; the two columns are
+     centred in the remaining space below it. The extra bottom padding keeps the
+     copy clear of the fixed social icons in the bottom-left corner. */
+  padding: calc(var(--header-h) + var(--section-top)) 0 clamp(3.5rem, 10vh, 6rem);
+}
+
+.contact-layout {
+  display: grid;
+  /* minmax(0, …) drops the automatic min-content floor of a bare fr track:
+     without it the left column's longest word pins the 5fr track wide and the
+     7fr right column collapses to roughly 1:1. */
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 4rem;
+  align-items: start;
+  margin-top: var(--gap-header-body);
+}
+
+.contact-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.contact-description {
+  font-family: var(--font-body);
+  font-size: var(--body-size);
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--text-2);
+  max-width: 28rem;
+  margin: 0;
+}
+
+/* Address / e-mail blocks, separated by hairline rules. */
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--card-border);
+}
+
+.contact-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.contact-info-label {
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  font-weight: 500;
+  letter-spacing: var(--micro-tracking);
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.contact-info-value {
+  font-family: var(--font-body);
+  font-size: var(--body-size);
+  font-weight: 400;
+  font-style: normal;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.contact-info-link:hover,
+.contact-info-link:focus {
+  text-decoration: underline;
+}
+
+.contact-right {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  /* The vertical hairline between the columns mirrors the HOW I WORK panel. */
+  border-left: 1px solid var(--card-border);
+  padding-left: 3rem;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Declared explicitly so the JS `form.hidden = true` success state is never
+   overridden by the display:flex above (an author rule beats the UA [hidden]
+   stylesheet). Same guard the HOW I WORK panel uses. */
+.contact-form[hidden] {
+  display: none;
+}
+
+/* Name + phone share a row on desktop. */
+.form-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1.5rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-label {
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  font-weight: 500;
+  letter-spacing: var(--micro-tracking);
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem 0;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--input-line);
+  border-radius: 0;
+  font-family: var(--font-body);
+  font-size: var(--body-size);
+  line-height: 1.4;
+  color: var(--text);
+  outline: none;
+  caret-color: var(--text);
+  transition: border-color var(--transition-fast);
+}
+
+.form-input::placeholder {
+  color: var(--text-5);
+}
+
+/* Cuando el campo recibe focus-visible (browser's focus ring): 
+   - quitamos el outline del navegador y cambiamos el sub-borde a 2px primary */
+.form-input:focus-visible {
+  outline: none;
+  border-bottom: 2px solid var(--text);
+  outline-offset: 4px;
+}
+
+/* Cuando el campo recibe focus (para compatibilidad con otros navegadores) */
+.form-input:focus {
+  outline: none;
+  border-bottom: 2px solid var(--text);
+}
+
+/* Label color change when field is focused (via :focus-within on .form-field) */
+.form-field:focus-within .form-label {
+  color: var(--text);
+}
+
+.form-input:focus-visible {
+}
+
+.form-input:focus::after,
+.form-input:focus-visible::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--chrome-gradient);
+  background-size: var(--chrome-text-bg-size);
+  animation: chrome-shift var(--chrome-text-duration) var(--chrome-text-ease) infinite alternate;
+  will-change: background-position;
+}
+
+.form-field {
+  position: relative;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .form-input:focus::after,
+  .form-input:focus-visible::after {
+    animation: none;
+    background-position: 50% 50%;
+  }
+}
+
+/* Chromium autofill would otherwise paint a light box over the underline. */
+.form-input:-webkit-autofill,
+.form-input:-webkit-autofill:hover,
+.form-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--text);
+  -webkit-box-shadow: 0 0 0 1000px transparent inset;
+  box-shadow: 0 0 0 1000px transparent inset;
+  transition: background-color 9999s ease-in-out 0s;
+  caret-color: var(--text);
+}
+
+.form-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.form-textarea {
+  resize: none;
+  min-height: 4.5rem;
+}
+
+.form-error {
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  letter-spacing: 0.05em;
+  line-height: 1.4;
+  color: var(--text-3);
+}
+
+.form-actions {
+  display: flex;
+}
+
+.btn-form {
+  align-self: flex-start;
+}
+
+.btn-form:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Status / error line below the form (idle when empty). */
+.form-status {
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  letter-spacing: 0.05em;
+  line-height: 1.5;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin: 0;
+}
+
+.form-status:empty {
+  display: none;
+}
+
+.form-status.is-success {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.2rem;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+/* ===== BACK TO TOP (bottom-right; shown only on the last section) ===== */
+.back-to-top {
+  position: fixed;
+  bottom: var(--bottom-pad);
+  right: var(--page-x);
+  z-index: var(--z-fixed);
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  text-decoration: none;
+  padding-left: 1.5rem;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 200ms ease, visibility 0s linear 200ms, pointer-events 200ms ease,
+    color var(--transition-fast);
+}
+
+.back-to-top.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 200ms ease, visibility 0s linear 0s, pointer-events 200ms ease,
+    color var(--transition-fast);
+}
+
+/* Inline BACK TO TOP link at the end of long pages (/blog, articles). Hidden on
+   desktop, where the fixed control is used; shown below 1024px. */
+.back-to-top-inline {
+  display: none;
+}
+
+@media (max-width: 1023.98px) {
+  .back-to-top-inline {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-family: var(--font-body);
+    font-size: var(--micro-size);
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+
+  .back-to-top-inline:hover,
+  .back-to-top-inline:focus-visible,
+  .back-to-top-inline:active {
+    color: var(--text);
+  }
+}
+
+.back-to-top::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1px;
+  /* Use the horizontal chrome line utility */
+  background: var(--chrome-gradient);
+  background-size: var(--chrome-text-bg-size);
+  animation: chrome-shift var(--chrome-text-duration) var(--chrome-text-ease) infinite alternate;
+  will-change: background-position;
+}
+
+.back-to-top:hover,
+.back-to-top:focus {
+  color: var(--text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .back-to-top::before {
+    animation: none;
+    background-position: 50% 50%;
+  }
+}
+
+/* Short viewports (e.g. 1366x650): compress CONTACT's vertical rhythm so the
+   whole section fits one viewport with no internal scroll. Declared AFTER the
+   section block so it wins on source order; scoped to desktop widths so it
+   never fights the mobile stack. */
+@media (max-height: 780px) and (min-width: 769px) {
+  /* Only the short viewports pay for the taller body rhythm: step the display
+     size down once for every .section-head title (BLOG, HOW I WORK, CONTACT) so
+     they stay exactly the same size as each other at these heights. */
+  .section-title,
+  .blog-title,
+  .hiw-title,
+  .contact-title {
+    font-size: clamp(1.8rem, 4vw, 4rem);
+  }
+
+  .contact-layout {
+    margin-top: 1.75rem;
+  }
+
+  .contact-form {
+    gap: 1.5rem;
+  }
+
+  .form-field {
+    gap: 0.3rem;
+  }
+
+  .form-input {
+    padding: 0.45rem 0;
+  }
+
+  .form-textarea {
+    min-height: 2.6rem;
+  }
+
+  .contact-info-item {
+    padding: 0.85rem 0;
+  }
+}
+
+/* Dual-locale 404 -----------------------------------------------------------
+   The root 404.html answers every unmatched URL, so it carries both locales.
+   The inline <head> script tags <html> before the body is parsed and these
+   rules decide which block is shown, so there is never a flash of English.
+   Without JS the English block stays visible.
+   `:not(html)` keeps the root element itself from matching: the script also
+   tags <html>, and hiding the root would blank the whole document. */
+[data-notfound-locale='es']:not(html) {
+  display: none;
+}
+
+html[data-notfound-locale='es'] [data-notfound-locale='es'] {
+  display: block;
+}
+
+html[data-notfound-locale='es'] [data-notfound-locale='en'] {
+  display: none;
+}
+
+/* ===== RESPONSIVE ===== */
+/* Below 1024px the fixed overlays leave the viewport (they move into the menu /
+   footer in the mobile pass), so the reserved lateral gutter collapses back to
+   the plain page margin. Everything in this query is mobile-only: the desktop
+   rendering at >= 1024px is unchanged. */
+@media (max-width: 1023.98px) {
+  :root {
+    --gutter: var(--page-x);
+  }
+
+  /* Scroll container: proximity (desktop keeps `y mandatory`). Sections here can
+     be taller than the viewport, so `scroll-snap-stop: normal` avoids trapping. */
+  html {
+    scroll-snap-type: y proximity;
+  }
+
+  .section {
+    scroll-snap-stop: normal;
+  }
+
+  /* Body scroll lock while the overlay is open (class added by JS). */
+  html.menu-open,
+  body.menu-open {
+    overflow: hidden;
+  }
+
+  /* Safe-area aware fixed header (top + lateral notches). */
+  .fixed-header {
+    padding-top: max(var(--header-top), env(safe-area-inset-top));
+    padding-left: max(var(--page-x), env(safe-area-inset-left));
+    padding-right: max(var(--page-x), env(safe-area-inset-right));
+  }
+}
+
+/* ===== HEADER SCROLLED STATE (all screen sizes) ===== */
+/* Scrolled header gains a translucent backdrop with blur. */
+.fixed-header.is-scrolled {
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: background var(--transition-normal), border-color var(--transition-normal), backdrop-filter var(--transition-normal);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fixed-header.is-scrolled {
+    transition: none;
+  }
+}
+
+/* Fallback for browsers without backdrop-filter support */
+@supports not (backdrop-filter: blur(12px)) {
+  .fixed-header.is-scrolled {
+    background: color-mix(in srgb, var(--bg) 96%, transparent);
+  }
+}
+
+/* ===== RESPONSIVE (mobile) ===== */
+@media (max-width: 1023.98px) {
+  /* The inline desktop nav is replaced by the MENU button below 1024px. */
+  .nav {
+    display: none;
+  }
+
+  /* On mobile the switcher drops the hairline and sits next to MENU, with a
+     44px tap target per chip. */
+  .header-switcher {
+    margin-right: 0;
+    padding-right: 0;
+    border-right: none;
+  }
+
+  .header-end {
+    gap: 0.75rem;
+  }
+
+  .lang-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0 0.25rem;
+  }
+
+  /* Switcher inside the overlay sits at the right end of the social row. */
+  .mobile-menu-switcher {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+  }
+
+  .fixed-social,
+  .fixed-scroll,
+  .back-to-top {
+    display: none;
+  }
+
+  /* MENU toggle. `hidden` in markup keeps it off desktop; this 0,2,0 selector
+     beats the UA `[hidden]` rule so it shows on mobile. */
+  .fixed-header .menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0 0.5rem;
+    font-family: var(--font-body);
+    font-size: var(--micro-size);
+    font-weight: var(--micro-weight);
+    letter-spacing: var(--micro-tracking);
+    text-transform: uppercase;
+    color: var(--text-3);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: color var(--transition-fast);
+  }
+
+  .menu-toggle:focus-visible,
+  .menu-toggle:active {
+    color: var(--text);
+  }
+
+  /* Full-screen overlay. `[hidden]` in markup keeps it off desktop; the
+     `:not([hidden])` selector re-shows it on mobile and still lets the hidden
+     attribute hide it while closed. */
+  .mobile-menu {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-modal);
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    opacity: 0;
+    transition: opacity 200ms var(--ease);
+  }
+
+  .mobile-menu:not([hidden]) {
+    display: flex;
+  }
+
+  .mobile-menu.is-open {
+    opacity: 1;
+  }
+
+  .mobile-menu-inner {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    width: 100%;
+    max-width: 100%;
+    padding-top: max(var(--header-top), env(safe-area-inset-top));
+    padding-left: max(var(--page-x), env(safe-area-inset-left));
+    padding-right: max(var(--page-x), env(safe-area-inset-right));
+    padding-bottom: max(var(--bottom-pad), env(safe-area-inset-bottom));
+  }
+
+  .mobile-menu-header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .menu-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    min-width: 44px;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--text-3);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: color var(--transition-fast);
+  }
+
+  .menu-close:focus-visible,
+  .menu-close:active {
+    color: var(--text);
+  }
+
+  .mobile-menu-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    margin: auto 0;
+  }
+
+  .mobile-menu-link {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    width: 100%;
+    padding: 0.6rem 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 8vw, 2.4rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    border-bottom: 1px solid var(--line);
+    transition: color var(--transition-fast);
+    position: relative;
+  }
+
+  .mobile-menu-link:first-child {
+    border-top: 1px solid var(--line);
+  }
+
+  .mobile-menu-link.active {
+    color: var(--text);
+  }
+
+  .mobile-menu-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--chrome-gradient);
+    background-size: var(--chrome-text-bg-size);
+    animation: chrome-shift var(--chrome-text-duration) var(--chrome-text-ease) infinite alternate;
+    will-change: background-position;
+  }
+
+  @media (hover: hover) {
+    .mobile-menu-link:hover,
+    .mobile-menu-link:focus-visible {
+      color: var(--text);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-menu-link.active::after {
+      animation: none;
+      background-position: 50% 50%;
+    }
+  }
+
+  .mobile-menu-social {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1.5rem;
+    padding-top: var(--space-4);
+  }
+
+  /* Cloned social links: keep the 18px icon but give the tap target 44px. */
+  .mobile-menu-social .social-link,
+  .contact-footer-social .social-link {
+    width: 44px;
+    height: 44px;
+  }
+
+  .mobile-menu-social .social-link svg,
+  .contact-footer-social .social-link svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* CONTACT footer row: the fixed socials/back-to-top move in here. `hidden`
+     keeps it off desktop; the 1,1,0 selector beats the UA `[hidden]` rule. */
+  #contact .contact-footer-row {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-3) var(--space-4);
+    width: 100%;
+    margin-top: var(--space-8);
+    padding-top: var(--space-4);
+    padding-bottom: max(var(--space-4), env(safe-area-inset-bottom));
+    border-top: 1px solid var(--line);
+  }
+
+  .contact-footer-social {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .contact-footer-back {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-family: var(--font-body);
+    font-size: var(--micro-size);
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+
+  .contact-footer-back:hover,
+  .contact-footer-back:focus-visible,
+  .contact-footer-back:active {
+    color: var(--text);
+  }
+
+  /* HERO below 1024px (TASK-034). The name must fit its column on ONE line at
+     every width from 320px up. Syne ExtraBold "EZEQUIEL" advances 8.502em with
+     the -0.01em tracking and the content box is viewport - 2 * --page-x, so the
+     brief's 10.5vw overflows: at 320px it renders 285px inside a 280px box and
+     at 360px 321px inside a 320px box. The largest coefficient that fits at
+     320px is 10.29vw; 10.2vw is used for a ~2.5px safety margin there.
+     grid-template-columns pins the implicit track to the available width so the
+     name can never widen the page. No effect at >= 1024px. */
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hero-name {
+    font-size: clamp(1.8rem, 10.2vw, 4.5rem);
+  }
+
+  /* The subtitle may wrap to 2 lines, right-aligned, and stays anchored to the
+     name block through the same absolute positioning context. */
+  .hero-role {
+    white-space: normal;
+    max-width: 100%;
+    text-align: right;
+  }
+
+  /* Inline SCROLL indicator: the vertical line sits below the SCROLL text,
+     centred at the bottom of the hero, 3rem above the edge and clear of the
+     bottom safe area. `hidden` in markup keeps it off desktop; this author rule
+     beats the UA `[hidden]` rule so it is always shown on mobile. */
+  .hero-scroll {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(3rem + env(safe-area-inset-bottom, 0px));
+    width: max-content;
+    margin-inline: auto;
+  }
+
+  /* ---- PORTFOLIO below 1024px (TASK-035) ---- */
+
+  /* Reflow: the section becomes a vertical stack and both wrapper boxes collapse,
+     so the carousel bleeds to the viewport edges (its parent is now the
+     full-width section, not the inset container) while title / subtitle / CTA /
+     dots stay in the centred content flow and can be re-ordered. */
+  .portfolio {
+    flex-direction: column;
+  }
+
+  .portfolio-inner,
+  .portfolio-caption {
+    display: contents;
+  }
+
+  .portfolio-title {
+    order: 1;
+    position: static;
+    z-index: auto;
+    margin-top: 0;
+    /* One line above the carousel. The brief's 8vw renders ~368px wide at 320px
+       inside a 280px box ("MY PORTFOLIO" advances 12.77em); 6.8vw is the largest
+       that fits, and the 1.3rem floor keeps the middle value active from 320px. */
+    font-size: clamp(1.3rem, 6.8vw, 2.6rem);
+  }
+
+  .portfolio-subtitle {
+    order: 2;
+    max-width: 32rem;
+    white-space: normal;
+    line-height: 1.6;
+  }
+
+  /* Horizontal scroll-snap carousel. Its parent is the full-width section, so
+     padding-inline gives the first/last card the page margin and the next card
+     peeks into view; the scrollbar is hidden. */
+  .project-row {
+    order: 3;
+    width: 100%;
+    justify-content: flex-start;
+    gap: 1rem;
+    padding: 1.5rem var(--page-x) 0;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--page-x);
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .project-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* AGENT GATEWAY (the featured card) leads the mobile carousel. Order is a
+     layout-only change inside this query, so the desktop row is untouched. */
+  .project-card--featured {
+    order: -1;
+  }
+
+  .project-card,
+  .project-card--featured {
+    width: min(78vw, 340px);
+    scroll-snap-align: start;
+    /* No title overlap on mobile, so the reserved title band goes away. */
+    padding-bottom: var(--card-pad);
+  }
+
+  .portfolio .portfolio-cta {
+    order: 4;
+    width: calc(100% - 2 * var(--page-x));
+    max-width: none;
+  }
+
+  .portfolio-dots {
+    order: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    margin-top: 1.25rem;
+  }
+
+  .portfolio-dot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
+
+  .portfolio-dot::before {
+    content: "";
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--line-strong);
+    transition: background var(--transition-fast), transform var(--transition-fast);
+  }
+
+  .portfolio-dot[aria-current="true"]::before {
+    background: var(--text);
+    transform: scale(1.4);
+  }
+
+  .portfolio-dot:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 2px;
+  }
+
+  /* ---- BLOG below 1024px (TASK-036) ---- */
+
+  /* The section head stacks: title, then subtitle. */
+  .blog-header,
+  .hiw-header,
+  .contact-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .blog-subtitle,
+  .hiw-subtitle,
+  .contact-subtitle {
+    text-align: left;
+    max-width: none;
+  }
+
+  .blog-list {
+    margin-top: 2rem;
+  }
+
+  /* Each row is a single anchor, so the tap target is the whole row. The meta
+     line (index / date / tag) sits on the first line with the arrow top-right;
+     the title and excerpt follow at full width. */
+  .blog-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "meta arrow"
+      "body body";
+    column-gap: 1rem;
+    row-gap: 0;
+    padding: 1.5rem 0;
+  }
+
+  .blog-row-meta {
+    grid-area: meta;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    min-width: 0;
+  }
+
+  .blog-row-body {
+    grid-area: body;
+    margin-top: 0.85rem;
+  }
+
+  .blog-row-arrow {
+    grid-area: arrow;
+  }
+
+  /* Title clamps to 3 lines and the excerpt to 2 on touch screens; desktop keeps
+     its 2-line title clamp and single-line excerpt ellipsis. */
+  .blog-row-title {
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+
+  .blog-row-excerpt {
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  /* Touch devices do not hover; keep the title from shifting. */
+  .blog-row:hover .blog-row-title,
+  .blog-row:focus-visible .blog-row-title {
+    transform: none;
+  }
+
+  /* Keep at least 2.5rem between the last row and the CTA button. */
+  .blog-cta {
+    margin-top: 2.5rem;
+  }
+
+  /* ---- HOW I WORK below 1024px (TASK-037): accordion ---- */
+
+  /* The same DOM is re-flowed: the menu/panel wrappers collapse with
+     `display: contents` so the tabs and panels become direct grid items, then
+     `order` interleaves each header with its panel. */
+  .hiw-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .hiw-menu,
+  .hiw-panels {
+    display: contents;
+  }
+
+  #hiw-tab-principles { order: 1; }
+  #hiw-panel-principles { order: 2; }
+  #hiw-tab-methodology { order: 3; }
+  #hiw-panel-methodology { order: 4; }
+  #hiw-tab-stack { order: 5; }
+  #hiw-panel-stack { order: 6; }
+  #hiw-tab-certifications { order: 7; }
+  #hiw-panel-certifications { order: 8; }
+
+  .hiw-tab {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 0.5rem;
+    row-gap: 0;
+    min-height: 44px;
+  }
+
+  /* The brief's clamp(1.1rem, 5.5vw, 1.6rem) is measured too wide for the
+     longest names on a phone: "CERTIFICATIONS" (14.24em) in the name track
+     overflows from 320px up (e.g. 251px at 17.6px inside a 190px track). The
+     largest coefficient that fits 320px with the icon + index is 4.7vw, and the
+     0.95rem floor keeps it comfortable. */
+  .hiw-tab-name {
+    font-size: clamp(0.95rem, 4.7vw, 1.6rem);
+  }
+
+  /* CSS-only +/– icon; `::after` only exists inside this query, so the desktop
+     markup and its rendering stay untouched. */
+  .hiw-tab::after {
+    content: "+";
+    justify-self: end;
+    padding-left: 0.5rem;
+    font-family: var(--font-body);
+    font-size: 1.25rem;
+    font-weight: 400;
+    line-height: 1;
+    color: var(--text-3);
+    transition: color var(--transition-fast);
+  }
+
+  .hiw-tab[aria-selected="true"]::after {
+    content: "–";
+    color: var(--text);
+  }
+
+  /* Height animation via a 0fr -> 1fr grid row. `hidden` no longer means
+     `display: none` here, so the collapse can transition; the closed panel is
+     clipped to zero height and dropped from the accessibility tree through
+     `visibility`. The visibility transition only carries the delay in the
+     `[hidden]` rule, so opening shows the content at once while closing keeps it
+     visible until the row has finished collapsing. */
+  .hiw-panel {
+    display: grid;
+    grid-template-rows: 1fr;
+    height: auto;
+    border-left: 0;
+    padding-left: 0;
+    padding-bottom: 1.5rem;
+    overflow: hidden;
+    visibility: visible;
+    transition: grid-template-rows var(--transition-normal), padding-bottom var(--transition-normal);
+  }
+
+  .hiw-panel[hidden] {
+    display: grid;
+    grid-template-rows: 0fr;
+    padding-bottom: 0;
+    visibility: hidden;
+    transition: grid-template-rows var(--transition-normal), padding-bottom var(--transition-normal),
+      visibility 0s linear var(--transition-normal);
+  }
+
+  .hiw-panel > * {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* The base fade would fight the height transition; keep just the height. */
+  .hiw-panel:not([hidden]) {
+    animation: none;
+  }
+
+  .hiw-principles,
+  .hiw-steps,
+  .hiw-stack {
+    grid-template-columns: 1fr;
+  }
+
+  /* ---- CONTACT below 1024px (TASK-038) ---- */
+
+  .contact-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2.5rem;
+  }
+
+  /* No vertical hairline once the columns stack. */
+  .contact-right {
+    border-left: 0;
+    padding-left: 0;
+  }
+
+  /* The e-mail address is the only interactive element in CONTACT that is a bare
+     text link, so it needs an explicit floor: at body size its line box is only
+     ~23px, under the 44px touch requirement. It stretches to the item width
+     already (the item is a stretch flex column), so only the height is raised.
+     The ADDRESS above it is a plain <address>, not a link, so it is untouched. */
+  .contact-info-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  /* 16px inputs below 1024px so iOS does not zoom on focus; the desktop input
+     sizing is unchanged. 44px min height keeps every field a touch target. */
+  .contact-form .form-input {
+    font-size: 1rem;
+    min-height: 44px;
+  }
+
+  /* Keep the textarea's roomier floor (the rule above would otherwise lower it). */
+  .contact-form .form-textarea {
+    min-height: 4.5rem;
+  }
+
+  /* Fields stack on phones; the tablet tier re-opens the Name + Phone pair. */
+  .contact-form .form-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Full-width submit button. `max-width: none` clears the phone-tier
+     `.btn` cap (16rem) which would otherwise shorten the button. */
+  .contact-form .btn-form {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+/* Tablet tier (TASK-039): a wider lateral gutter, carousel cards at ~45vw, the
+   two-column BLOG grid and the Name + Phone pair. Measured, not guessed — see
+   odd/tasks/responsive-pass.md Step 3. */
+@media (min-width: 640px) and (max-width: 1023.98px) {
+  /* Larger gutter than the 20px phone floor, still continuous with the desktop
+     clamp at 1024px (3.5vw keeps 640-1023 on the same curve). */
+  :root {
+    --page-x: clamp(1.5rem, 3.5vw, 2.5rem);
+  }
+
+  .project-card,
+  .project-card--featured {
+    width: 45vw;
+  }
+
+  /* BLOG keeps the two-column grid [meta | title+excerpt]; the arrow sits at the
+     top of the content column. Measured body column: 340px at 640x900, 627px at
+     1023x1000, so the row never overflows. */
+  .blog-row {
+    grid-template-columns: minmax(0, 14rem) minmax(0, 1fr);
+    grid-template-areas:
+      "meta arrow"
+      "meta body";
+    column-gap: 1.5rem;
+  }
+
+  .blog-row-meta {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 0.4rem;
+  }
+
+  /* Name + Phone sit side by side from 640px. */
+  .contact-form .form-row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+/* Short / landscape phones (TASK-041): viewports up to 500px tall in landscape.
+   The width guard is deliberate: the desktop design is frozen at >= 1024px wide
+   for ANY height, and a bare (max-height: 500px) and (orientation: landscape)
+   query would also match a 1024x480 desktop window. */
+@media (max-width: 1023.98px) and (max-height: 500px) and (orientation: landscape) {
+  /* A section can be taller than the viewport here; mandatory snapping would trap
+     the reader mid-section, so snapping is disabled for this tier. */
+  html {
+    scroll-snap-type: none;
+  }
+
+  /* Sections MAY be taller than the viewport. Centring an item that overflows its
+     container pushes the overflowing half above the scroll origin, where it can
+     never be reached; the sections top-align instead. --header-h is only the
+     nominal fixed-header footprint, so a small buffer is added to clear the real
+     header, and the bottom padding reserves the safe area. */
+  .hero,
+  .portfolio,
+  .blog,
+  .how-i-work,
+  .contact {
+    min-height: 100svh;
+    padding-top: calc(var(--header-h) + 1rem);
+    padding-bottom: calc(var(--bottom-pad) + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Grid (hero) and row-flex sections align on the vertical cross axis. */
+  .hero,
+  .blog,
+  .how-i-work,
+  .contact {
+    align-items: flex-start;
+  }
+
+  /* Column-flex PORTFOLIO: the vertical axis is the main axis, so it is
+     `justify-content` that top-aligns; the horizontal axis stays centred. */
+  .portfolio {
+    justify-content: flex-start;
+  }
+
+  /* The overlay (4 stacked links + 3 social icons + close) is taller than a
+     landscape phone. The overlay itself becomes the scroll container so the last
+     link is reachable, while the close button stays at the top of the content. */
+  .mobile-menu {
+    align-items: flex-start;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mobile-menu-inner {
+    height: auto;
+    min-height: 100%;
+  }
+
+  /* The short-viewport rules shrink the `.btn` padding and the logo line box
+     below the 44px touch-target floor. Landscape phones are touch devices, so
+     both are raised back to 44px here. */
+  .btn,
+  .logo {
+    min-height: 44px;
+  }
+}
+
+/* Reduced motion: the accordion height animation is disabled (the brief only
+   allows `!important` inside reduced-motion blocks). */
+@media (prefers-reduced-motion: reduce) and (max-width: 1023.98px) {
+  .hiw-panel,
+  .hiw-panel[hidden] {
+    transition: none !important;
+  }
+}
+
+/* Hover-only affordances for the new controls (never apply on touch).
+   Also scoped to the mobile query: `(hover: hover) and (pointer: fine)` does
+   match a desktop viewport, so without the width condition this would be a new
+   base-level block, which the desktop freeze forbids. */
+@media (max-width: 1023.98px) and (hover: hover) and (pointer: fine) {
+  .fixed-header .menu-toggle:hover {
+    color: var(--text);
+  }
+
+  .menu-close:hover {
+    color: var(--text);
+  }
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --bottom-pad: 2.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --header-top: 1.75rem;
+    --bottom-pad: 2rem;
+  }
+
+  .nav {
+    gap: 1.25rem;
+  }
+
+  .hero-label {
+    font-size: var(--micro-size);
+  }
+
+  .hero-role {
+    font-size: var(--micro-size);
+  }
+
+  .contact-layout {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  /* No vertical hairline once the columns stack. */
+  .contact-right {
+    border-left: 0;
+    padding-left: 0;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav {
+    display: none;
+  }
+
+  .btn {
+    width: 100%;
+    max-width: 16rem;
+  }
+}
+
+/* ===== PRINT ===== */
+@media print {
+  .fixed-header,
+  .fixed-social,
+  .fixed-scroll,
+  .back-to-top {
+    display: none;
+  }
+
+  .section {
+    min-height: auto;
+    page-break-inside: avoid;
+  }
+}
+
+/* ===== REDUCED MOTION — single global definition ===== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .project-card:hover,
+  .project-card:focus-visible {
+    transform: translateX(3px);
+  }
+  .blog-row:hover .blog-row-title,
+  .blog-row:focus-visible .blog-row-title,
+  .blog-row:hover .blog-row-arrow,
+  .blog-row:focus-visible .blog-row-arrow,
+  .hiw-tab[aria-selected="true"] .hiw-tab-name,
+  .hiw-tab:focus-visible .hiw-tab-name,
+  .hiw-panel:not([hidden]),
+  .scroll-line::after {
+    transform: none;
+    animation: none;
+  }
+}
+
+/* ===== ARTICLE BODY (global — applies to markdown-rendered content) ===== */
+.article-body {
+  font-family: var(--font-body);
+  font-size: 1.0625rem; /* 17px */
+  line-height: 1.7;
+  color: var(--text-2);
+}
+
+/* Headings */
+.article-body h2,
+.article-body h3,
+.article-body h4,
+.article-body h5,
+.article-body h6 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--text);
+  margin-top: var(--space-20);
+  margin-bottom: var(--space-4);
+  line-height: 1.2;
+  position: relative;
+}
+
+.article-body h2 {
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  margin-top: var(--space-24); /* 96px above divider (desktop) */
+  padding-top: var(--space-6); /* 24px below divider */
+  margin-bottom: var(--space-4);
+  border-top: 1px solid var(--line-strong);
+  scroll-margin-top: calc(var(--header-h) + var(--space-6));
+}
+
+@media (max-width: 1023.98px) {
+  .article-body h2 {
+    margin-top: var(--space-16); /* 64px above divider (mobile) */
+    scroll-margin-top: calc(var(--header-h) + var(--space-6));
+  }
+}
+
+.article-body h2 .section-number {
+  display: block;
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  font-weight: var(--micro-weight);
+  letter-spacing: var(--micro-tracking);
+  text-transform: uppercase;
+  color: var(--text-3);
+  line-height: 1;
+  margin-bottom: var(--space-2); /* 8px gap between number and title */
+}
+
+.article-body {
+  counter-reset: section;
+}
+
+.article-body h3 {
+  font-size: clamp(1.15rem, 1.8vw, 1.6rem);
+  line-height: 1.3;
+  margin-top: var(--space-10); /* 40px */
+  margin-bottom: var(--space-3); /* 12px */
+}
+
+.article-body h4 {
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  line-height: 1.3;
+  margin-top: var(--space-10);
+  margin-bottom: var(--space-3);
+}
+
+.article-body h5,
+.article-body h6 {
+  font-size: var(--body-size);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: var(--space-8);
+  margin-bottom: var(--space-3);
+}
+
+/* Paragraphs */
+.article-body p {
+  margin-bottom: 1.25em;
+}
+
+/* Callouts: Rule:, Cost:, Trade-off:, Discarded alternatives:, etc.
+   Style the leading <strong> in paragraphs that ends with ":" as a microtext label */
+.article-body p > strong.callout-label {
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  font-weight: var(--micro-weight);
+  letter-spacing: var(--micro-tracking);
+  text-transform: uppercase;
+  color: var(--text-2); /* lighter for better contrast */
+  display: block;
+  margin-bottom: var(--space-1); /* ~6px */
+}
+
+.article-body p > strong.callout-label::after {
+  content: ""; /* hide the colon */
+}
+
+/* Links */
+.article-body a {
+  color: var(--text-2);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color var(--transition-fast);
+}
+
+.article-body a:hover {
+  color: var(--text);
+}
+
+/* Horizontal rule */
+.article-body hr {
+  border: none;
+  border-top: 1px solid var(--line-strong);
+  margin: 1.5em 0;
+}
+
+/* Blockquotes */
+.article-body blockquote {
+  border-left: 1px solid var(--line-strong);
+  padding-left: var(--space-4);
+  margin: var(--space-8) 0;
+  font-style: italic;
+  color: var(--text-3);
+  line-height: 1.7;
+}
+
+.article-body blockquote p {
+  margin-bottom: var(--space-2);
+}
+
+.article-body blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+.article-body blockquote cite {
+  display: block;
+  margin-top: var(--space-3);
+  font-size: var(--small-size);
+  font-style: normal;
+  color: var(--text-4);
+}
+
+.article-body blockquote cite::before {
+  content: "— ";
+}
+
+/* Lists - with proper spacing (1.5em between items) */
+.article-body ul,
+.article-body ol {
+  margin: 1.5em 0 1.5em 1.5em;
+  padding-left: 0;
+}
+
+.article-body ul {
+  list-style: none;
+}
+
+.article-body ul li {
+  position: relative;
+  padding-left: var(--space-4);
+  margin-bottom: 0.5em;
+}
+
+.article-body ul li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.65em;
+  width: 4px;
+  height: 4px;
+  background: var(--text-4);
+  border-radius: 50%;
+}
+
+.article-body ol {
+  counter-reset: article-list;
+  list-style: none;
+}
+
+.article-body ol li {
+  position: relative;
+  padding-left: var(--space-4);
+  margin-bottom: 0.5em;
+  counter-increment: article-list;
+}
+
+.article-body ol li::before {
+  content: counter(article-list) ".";
+  position: absolute;
+  left: 0;
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  font-weight: 500;
+  color: var(--text-3);
+  line-height: 1.7;
+}
+
+.article-body li > p {
+  margin-bottom: 0.5em;
+}
+
+.article-body li > p:last-child {
+  margin-bottom: 0;
+}
+
+.article-body li > ul,
+.article-body li > ol {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+/* Images */
+.article-body img {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line-strong);
+  margin: var(--space-8) 0;
+  border-radius: 0;
+}
+
+.article-body figure {
+  margin: var(--space-8) 0;
+}
+
+.article-body figure img {
+  margin: 0;
+}
+
+.article-body figcaption {
+  margin-top: var(--space-3);
+  font-family: var(--font-body);
+  font-size: var(--small-size);
+  line-height: var(--small-line);
+  color: var(--text-4);
+  text-align: center;
+}
+
+/* Tables - full width, micro uppercase headers, mono first column, overflow-x on mobile */
+.article-body table {
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+  font-size: var(--small-size);
+  overflow-x: auto;
+  display: block;
+}
+
+.article-body th,
+.article-body td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+.article-body th {
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  font-weight: var(--micro-weight);
+  letter-spacing: var(--micro-tracking);
+  text-transform: uppercase;
+  color: var(--text-3);
+  background: var(--surface);
+  font-weight: var(--micro-weight);
+}
+
+.article-body td {
+  color: var(--text-2);
+}
+
+.article-body td:first-child {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9em;
+}
+
+.article-body tbody tr:last-child th,
+.article-body tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Inline code - subtle background, mono, horizontal padding, inherit line-height */
+.article-body code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.88em;
+  background: var(--surface);
+  color: var(--text);
+  padding: 0.1em 0.35em;
+  border: none;
+  border-radius: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  display: inline-block;
+  line-height: inherit;
+}
+
+/* Code blocks - slightly lighter than page bg, 1px border, generous padding, no radius */
+.article-body pre {
+  margin: 1.5em 0;
+  padding: 1.25rem 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 0;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.article-body pre code {
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--text-2);
+}
+
+/* ASCII diagrams - ensure they don't overflow and use mono */
+.article-body pre:has(code:not(.hljs)) {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  white-space: pre;
+  word-break: normal;
+}
+
+/* Syntax highlighting */
+.article-body .hljs { color: var(--text-2); background: transparent; }
+.article-body .hljs-comment { color: var(--text-4); }
+.article-body .hljs-keyword { color: var(--text); }
+.article-body .hljs-string { color: var(--text-3); }
+.article-body .hljs-number { color: var(--text-3); }
+.article-body .hljs-function { color: var(--text); }
+.article-body .hljs-title { color: var(--text); }
+.article-body .hljs-params { color: var(--text-2); }
+.article-body .hljs-built_in { color: var(--text); }
+.article-body .hljs-literal { color: var(--text); }
+.article-body .hljs-type { color: var(--text); }
+.article-body .hljs-class { color: var(--text); }
+.article-body .hljs-attribute { color: var(--text-3); }
+
+/* Code block copy button */
+.code-block {
+  position: relative;
+}
+
+.code-copy-btn {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  width: 28px;
+  height: 28px;
+  background: var(--surface-hover);
+  border: 1px solid var(--line);
+  border-radius: 0;
+  opacity: 0;
+  transition: opacity var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-4);
+}
+
+.code-block:hover .code-copy-btn,
+.code-copy-btn:focus-visible {
+  opacity: 1;
+}
+
+.code-copy-btn:hover {
+  background: var(--surface-hover-strong);
+  color: var(--text);
+}
+
+.code-copy-btn.copied {
+  background: var(--chrome-cyan);
+  border-color: var(--chrome-cyan);
+  color: var(--bg);
+}
+
+/* Other inline elements */
+.article-body kbd {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8em;
+  background: var(--surface);
+  color: var(--text);
+  padding: 0.15em 0.4em;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  white-space: nowrap;
+}
+
+.article-body samp {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  color: var(--text-3);
+}
+
+.article-body mark {
+  background: var(--chrome-gradient);
+  background-size: var(--chrome-text-bg-size);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  padding: 0 0.1em;
+}
+
+.article-body del {
+  text-decoration: line-through;
+  color: var(--text-4);
+}
+
+.article-body ins {
+  text-decoration: underline;
+  color: var(--text-3);
+}
+
+.article-body sub,
+.article-body sup {
+  font-size: 0.75em;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+.article-body sub { bottom: -0.25em; }
+.article-body sup { top: -0.5em; }
+
+.article-body var {
+  font-style: italic;
+  color: var(--text-2);
+}
+
+/* Details/Summary */
+.article-body details {
+  margin: var(--space-4) 0;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.article-body summary {
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-body);
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  list-style: none;
+}
+
+.article-body summary::-webkit-details-marker {
+  display: none;
+}
+
+.article-body summary::after {
+  content: "+";
+  float: right;
+  font-size: 1.2em;
+  font-weight: 600;
+  color: var(--text-3);
+  transition: transform var(--transition-fast);
+}
+
+.article-body details[open] summary::after {
+  transform: rotate(45deg);
+}
+
+.article-body details > *:not(summary) {
+  padding: 0 var(--space-4) var(--space-4);
+}
+
+/* ===== ARTICLE HEADER & FOOTER (global) ===== */
+.article-header {
+  margin-bottom: var(--gap-header-body);
+}
+
+.article-eyebrow {
+  margin-bottom: var(--space-2);
+  white-space: nowrap;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  font-weight: var(--micro-weight);
+  letter-spacing: var(--micro-tracking);
+  text-transform: uppercase;
+  color: var(--text-3);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+  white-space: nowrap;
+}
+
+.back-link:hover {
+  color: var(--text);
+}
+
+.back-link:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+.article-label {
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  font-weight: var(--micro-weight);
+  letter-spacing: var(--micro-tracking);
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: var(--space-4);
+  white-space: nowrap;
+}
+
+.article-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--text);
+  margin: 0 0 var(--space-6);
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
+.article-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  color: var(--text-4);
+  margin-bottom: var(--space-6);
+}
+
+.article-tag {
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+
+.meta-separator {
+  color: var(--text-4);
+}
+
+.article-divider {
+  border: none;
+  border-top: 1px solid var(--line-strong);
+  margin: 0;
+}
+
+/* Article footer */
+.article-footer {
+  margin-top: var(--space-20);
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--card-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  align-items: start;
+}
+
+.nav-label {
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  font-weight: var(--micro-weight);
+  letter-spacing: var(--micro-tracking);
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: var(--space-2);
+  display: block;
+}
+
+.nav-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1rem, 2vw, 1.375rem);
+  line-height: 1.3;
+  color: var(--text);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.nav-title:hover {
+  color: var(--text-2);
+}
+
+.nav-title:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 4px;
+}
+
+.article-footer .btn {
+  align-self: center;
+  margin-top: var(--space-4);
+}
+
+/* Mobile */
+@media (max-width: 1023.98px) {
+  .article-toc {
+    display: block;
+    position: static;
+    max-height: none;
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+    padding: 0 0 var(--space-4);
+    margin-bottom: var(--space-8);
+    overflow: visible;
+  }
+
+  .toc-nav {
+    padding: 0;
+  }
+
+  .toc-list {
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .toc-item {
+    border-left: none;
+    padding: 0;
+  }
+
+  .toc-link {
+    display: flex;
+    align-items: center;
+    padding: var(--space-3) var(--space-4);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 0;
+    min-height: 44px; /* Minimum touch target */
+    text-decoration: none;
+    color: var(--text-3);
+    transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
+    min-width: 0; /* Allow flex item to shrink */
+  }
+
+  .toc-link:hover,
+  .toc-link:focus-visible {
+    color: var(--text);
+    background: var(--surface-hover);
+  }
+
+  .toc-link.is-active {
+    border-color: var(--chrome-cyan);
+    color: var(--text);
+  }
+
+  .toc-number {
+    display: inline-block;
+    width: 2ch;
+    margin-right: var(--space-2);
+    font-family: var(--font-body);
+    font-size: var(--micro-size);
+    font-weight: var(--micro-weight);
+    letter-spacing: var(--micro-tracking);
+    text-transform: uppercase;
+    color: var(--text-4);
+    flex-shrink: 0;
+  }
+
+  .toc-link.is-active .toc-number {
+    color: var(--chrome-cyan);
+  }
+
+  .article-body h2::before {
+    left: 0;
+    right: 0;
+  }
+
+  .article-footer {
+    flex-direction: column;
+    gap: var(--space-6);
+    align-items: stretch;
+  }
+
+  .article-footer .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ===== REDUCED MOTION — single global definition ===== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .project-card:hover,
+  .project-card:focus-visible {
+    transform: translateX(3px);
+  }
+  .blog-row:hover .blog-row-title,
+  .blog-row:focus-visible .blog-row-title,
+  .blog-row:hover .blog-row-arrow,
+  .blog-row:focus-visible .blog-row-arrow,
+  .hiw-tab[aria-selected="true"] .hiw-tab-name,
+  .hiw-tab:focus-visible .hiw-tab-name,
+  .hiw-panel:not([hidden]),
+  .scroll-line::after {
+    transform: none;
+    animation: none;
+  }
+}
+/* GitHub link inside project cards */
+.project-card-github {
+  position: absolute;
+  top: calc(var(--title-band) + 0.5rem);
+  right: var(--card-pad);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  text-decoration: none;
+  z-index: 10;
+  transition: color var(--transition-fast);
+}
+
+/* Ensure the link inside has no default browser styles */
+.project-card-github a {
+  color: var(--text-3);
+  text-decoration: none;
+}
+
+.project-card-github a:visited {
+  color: var(--text-3);
+}
+
+.project-card-github a:hover,
+.project-card-github a:focus-visible {
+  color: var(--text);
+}
+
+/* Hove state - also active for completeness */
+.project-card-github a:active {
+  color: var(--text);
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .project-card-github a:hover,
+  .project-card-github a:focus-visible {
+    color: var(--text-3);
+  }
+}
+
+/* Arrow inside GitHub link keeps diagonal style - no CSS change needed for SVG */
+
+/* Skip link: oculto hasta recibir foco */
+.skip-link {
+  position: fixed;
+  top: var(--space-3);
+  left: var(--space-3);
+  z-index: 300;
+  transform: translateY(-120%);
+  transition: transform var(--transition-fast);
+  background: var(--bg);
+  color: var(--bg);
+  border: 0;
+  padding: var(--space-3) var(--space-5);
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  font-weight: var(--micro-weight);
+  letter-spacing: var(--micro-tracking);
+  line-height: 1;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skip-link {
+    transition: none;
+  }
+}
+
+/* Ensure GitHub links inside project cards are positioned correctly */
+.project-card-github {
+  position: absolute;
+  top: calc(var(--title-band) + 0.5rem);
+  right: calc(var(--card-pad) - 0.25rem);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  text-decoration: none;
+  z-index: 10;
+  transition: color var(--transition-fast);
+  white-space: nowrap;
+}
+
+/* The anchor inside the span */
+.project-card-github a {
+  color: var(--text-3);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.project-card-github a:visited {
+  color: var(--text-3);
+}
+
+.project-card-github a:hover,
+.project-card-github a:focus-visible {
+  color: var(--text);
+}
+
+.project-card-github a:active {
+  color: var(--text);
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .project-card-github a:hover,
+  .project-card-github a:focus-visible {
+    color: var(--text-3);
+  }
+}
+
+/* Ensure the span itself doesn't interfere with hover */
+.project-card:hover .project-card-github a,
+.project-card:focus-visible .project-card-github a {
+  color: var(--text);
+}
+a[href*="github.com"] { margin-right: 2rem; margin-top: 1rem; }
+
+.form-privacy-new {
+  font-size: var(--micro-size);
+  color: var(--text-3);
+  font-family: var(--font-body);
+  letter-spacing: 0.05em;
+  line-height: 1.5;
+  max-width: 30ch;
+  margin: 0.5rem 0;
+}

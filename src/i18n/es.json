@@ -1,0 +1,227 @@
+{
+  "common": {
+    "backToTop": "VOLVER ARRIBA \u2191"
+  },
+  "nav": {
+    "projects": "Proyectos",
+    "blog": "Blog",
+    "howIWork": "C\u00f3mo trabajo",
+    "contact": "Contacto"
+  },
+  "hero": {
+    "iam": "Soy",
+    "role": "Ingeniero en Seguridad de IA",
+    "tagline": "Backend & Seguridad para Agentes de IA",
+    "scroll": "Scroll",
+    "heroName": "Ezequiel"
+  },
+  "brand": {
+    "initials": "ER",
+    "fullName": "Ezequiel Ranieri"
+  },
+  "a11y": {
+    "home": "Inicio",
+    "skipToContent": "Saltar al contenido",
+    "mainNavigation": "Navegaci\u00f3n principal",
+    "socialLinks": "Redes sociales",
+    "githubProfile": "Perfil de GitHub",
+    "linkedinProfile": "Perfil de LinkedIn",
+    "xProfile": "Perfil de X",
+    "backToTop": "Volver arriba",
+    "closeMenu": "Cerrar men\u00fa",
+    "menuOpen": "Abrir men\u00fa"
+  },
+  "home": {
+    "meta": {
+      "title": "Ezequiel Ranieri \u2014 Ingeniero en Seguridad de IA",
+      "description": "Ingeniero en seguridad de IA. Infraestructura backend y de seguridad para agentes de IA: identidad no humana, IAM, sistemas distribuidos y seguridad basada en capacidades."
+    },
+    "projects": {
+      "aegis": {
+        "name": "AEGIS",
+        "label": "Secure WASM runtime"
+      },
+      "agentGateway": {
+        "name": "AGENT GATEWAY",
+        "label": "Gateway de agentes"
+      },
+      "mettle": {
+        "name": "METTLE",
+        "label": "Evaluaci\u00f3n y safety de agentes"
+      }
+    },
+    "portfolio": {
+      "title": "Mi portfolio",
+      "subtitle": "Agentes de IA seguros \u00b7 Non-Human Identity",
+      "cta": "Ver todo en GitHub"
+    },
+    "blog": {
+      "subtitle": "Notas de ingenier\u00eda sobre agentes de IA seguros",
+      "cta": "VER ART\u00cdCULOS",
+      "emptyHome": "Primeros art\u00edculos muy pronto"
+    },
+    "howIWork": {
+      "subtitle": "Infraestructura de confianza para sistemas de IA aut\u00f3nomos",
+      "categories": {
+        "principles": {
+          "name": "PRINCIPIOS",
+          "items": {
+            "securityFirst": {
+              "name": "Seguridad primero",
+              "text": "Modelado de amenazas desde el d\u00eda 0. Seguridad basada en capacidades, zero-trust, m\u00ednimo privilegio por defecto."
+            },
+            "hexagonalArchitecture": {
+              "name": "Arquitectura hexagonal",
+              "text": "Dominio puro con cero dependencias externas. Puertos y adaptadores para BD, HTTP, gRPC, OIDC."
+            },
+            "testingAsSpecification": {
+              "name": "Aislamiento por defecto",
+              "text": "Aislamiento de tenants en la base de datos con RLS FORCE. C\u00f3digo no confiable en sandbox WASM con fuel medido."
+            },
+            "nativeObservability": {
+              "name": "Verificable por dise\u00f1o",
+              "text": "Recibos firmados y auditor\u00eda con hash encadenado. Cada acci\u00f3n del agente deja evidencia verificable."
+            },
+            "simplicityOverCleverness": {
+              "name": "Evaluar antes de confiar",
+              "text": "Specs declarativos, or\u00e1culos de autorizaci\u00f3n y gates de regresi\u00f3n en CI. Comportamiento del agente probado, no supuesto."
+            },
+            "livingDocumentation": {
+              "name": "Documentaci\u00f3n viva",
+              "text": "ADRs para decisiones arquitect\u00f3nicas. README como punto de entrada. Comentarios solo para el \"porqu\u00e9\", nunca el \"qu\u00e9\"."
+            }
+          }
+        },
+        "methodology": {
+          "name": "METODOLOG\u00cdA",
+          "items": {
+            "exploreFirst": "Exploro primero: entiendo el c\u00f3digo existente, las restricciones y los trade-offs antes de proponer",
+            "specifyExplicitly": "Especifico expl\u00edcitamente: ADR para decisiones irreversibles, spec para features",
+            "implementInVerticalSlices": "Implemento en slices verticales: cada commit entrega valor verificable",
+            "verifyAutomatically": "Verifico autom\u00e1ticamente: tests, linter, type-check y security scan en CI",
+            "reviewWithJudgment": "Reviso con criterio: revisi\u00f3n a fondo en riesgo medio/alto, revisi\u00f3n estructural en cambios de bajo riesgo",
+            "deliverInWorkUnitCommits": "Entrego por unidad de trabajo: tests, docs y c\u00f3digo juntos, Conventional Commits"
+          }
+        },
+        "stack": {
+          "name": "STACK"
+        },
+        "certifications": {
+          "name": "CERTIFICACIONES"
+        }
+      }
+    },
+    "contact": {
+      "subtitle": "Abierto a proyectos y colaboraciones",
+      "description": "\u00bfConstru\u00eds agentes que operan sobre sistemas reales? Puedo ayudarte a dise\u00f1ar la capa de identidad, aislamiento y auditor\u00eda. Contame en qu\u00e9 trabaj\u00e1s.",
+      "info": {
+        "addressLabel": "Ubicaci\u00f3n",
+        "emailLabel": "EMAIL"
+      },
+      "form": {
+        "nameLabel": "NOMBRE",
+        "namePlaceholder": "Tu nombre",
+        "phoneLabel": "TEL\u00c9FONO",
+        "phonePlaceholder": "Opcional",
+        "emailLabel": "Email",
+        "emailPlaceholder": "tu@ejemplo.com",
+        "messageLabel": "MENSAJE",
+        "messagePlaceholder": "Contame sobre tu proyecto",
+        "privacyNotice": "Tus datos se usan solo para responderte. La protecci\u00f3n antispam procesa datos t\u00e9cnicos, como tu direcci\u00f3n IP.",
+        "submit": "ENVIAR MENSAJE",
+        "sending": "ENVIANDO...",
+        "validation": {
+          "nameRequired": "Por favor ingres\u00e1 tu nombre.",
+          "emailInvalid": "Por favor ingres\u00e1 un correo electr\u00f3nico v\u00e1lido.",
+          "messageMinLength": "Por favor escrib\u00ed al menos 10 caracteres.",
+          "captchaRequired": "Por favor complet\u00e1 el captcha."
+        },
+        "status": {
+          "success": "MENSAJE ENVIADO. TE RESPONDER\u00c9 PRONTO.",
+          "error": "ALGO SALI\u00d3 MAL. INTENT\u00c1 DE NUEVO O ESCRIBIME DIRECTAMENTE."
+        }
+      },
+      "footer": {}
+    },
+    "menu": {
+      "toggle": "MEN\u00da"
+    },
+    "stack": {
+      "languages": {
+        "label": "LENGUAJES",
+        "text": "Go (principal) \u00b7 Rust \u00b7 Python"
+      },
+      "runtimeInfra": {
+        "label": "RUNTIME / INFRA",
+        "text": "Kubernetes \u00b7 NATS \u00b7 PostgreSQL \u00b7 Redis \u00b7 SQLite"
+      },
+      "security": {
+        "label": "SEGURIDAD",
+        "text": "SPIFFE/SPIRE \u00b7 OPA/Cedar \u00b7 sigstore/cosign \u00b7 WASM (wasmtime)"
+      },
+      "observability": {
+        "label": "OBSERVABILIDAD",
+        "text": "OpenTelemetry \u00b7 Prometheus \u00b7 Grafana \u00b7 Loki \u00b7 Tempo"
+      },
+      "testing": {
+        "label": "PRUEBAS",
+        "text": "testify \u00b7 ginkgo \u00b7 quickcheck \u00b7 testcontainers"
+      },
+      "tooling": {
+        "label": "HERRAMIENTAS",
+        "text": "sqlc \u00b7 buf/protobuf \u00b7 golangci-lint \u00b7 gofumpt \u00b7 direnv"
+      }
+    },
+    "certifications": {
+      "developingSecureSoftware": {
+        "name": "Developing Secure Software (LFD121)",
+        "issuer": "Linux Foundation \u00b7 2026"
+      },
+      "secureAiMlDrivenSoftwareDevelopment": {
+        "name": "Secure AI/ML-Driven Software Development",
+        "issuer": "Linux Foundation \u00b7 2026"
+      }
+    }
+  },
+  "blog": {
+    "meta": {
+      "title": "Blog \u00b7 Ezequiel Ranieri"
+    },
+    "empty": "No hay art\u00edculos publicados a\u00fan.",
+    "backToHome": "VOLVER AL INICIO"
+  },
+  "article": {
+    "labelPrefix": "BLOG / ",
+    "backToBlog": "VOLVER AL BLOG",
+    "minRead": "{{m}} MIN DE LECTURA",
+    "updated": "ACTUALIZADO {{date}}",
+    "previousArticle": "ART\u00cdCULO ANTERIOR",
+    "nextArticle": "ART\u00cdCULO SIGUIENTE",
+    "allArticles": "VER ART\u00cdCULOS",
+    "tableOfContents": "\u00cdNDICE",
+    "articleGithub": "VER EN GITHUB \u2197"
+  },
+  "notFound": {
+    "meta": {
+      "title": "404 \u00b7 Ezequiel Ranieri",
+      "description": "P\u00e1gina no encontrada"
+    },
+    "title": "404",
+    "message": "La p\u00e1gina que buscas no existe."
+  },
+  "contactApi": {
+    "rateLimited": "Demasiadas solicitudes. Por favor intent\u00e1 m\u00e1s tarde.",
+    "forbidden": "Solicitud rechazada: origen inesperado.",
+    "captchaFailed": "La verificaci\u00f3n del captcha fall\u00f3. Por favor intent\u00e1 de nuevo.",
+    "invalidJson": "Carga JSON inv\u00e1lida.",
+    "messageTooLong": "Mensaje demasiado largo (m\u00e1ximo 2000 caracteres)."
+  },
+  "switcher": {
+    "labelEn": "EN",
+    "labelEs": "ES",
+    "switchToEn": "Switch to English",
+    "switchToEs": "Cambiar a espa\u00f1ol",
+    "ariaLabel": "Selector de idioma",
+    "noticeNoTranslation": "ART\u00cdCULO DISPONIBLE SOLO EN INGL\u00c9S"
+  }
+}

@@ -1,0 +1,101 @@
+---
+// Fixed BACK TO TOP control, shared by every page.
+//
+// Visibility is owned by the script below:
+//   - homepage (the page also renders a `.fixed-scroll` indicator): the control
+//     crossfades in when the CONTACT section is at least 50% in view, or when
+//     the page bottom is reached, whichever comes first; the SCROLL indicator
+//     fades out at the same moment.
+//   - long pages without a `.fixed-scroll` indicator (/blog, articles): the
+//     control appears after scrolling 1.5 viewport heights and hides again near
+//     the top.
+//
+// The hidden state is opacity 0 + visibility hidden + aria-hidden + tabindex -1,
+// so it can never be focused or clicked while invisible. Below 1024px the fixed
+// control is hidden by CSS and the inline footer link takes over.
+
+import { getTranslator, type Locale } from '@/i18n';
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = 'en' } = Astro.props;
+const t = getTranslator(locale);
+---
+<a
+  href="#top"
+  class="back-to-top"
+  aria-label={t('a11y.backToTop')}
+  aria-hidden="true"
+  tabindex="-1"
+  data-scroll-top>{t('common.backToTop')}</a
+>
+
+<script>
+  (() => {
+    const fixedBtn = document.querySelector('.back-to-top');
+    const fixedScroll = document.querySelector('.fixed-scroll');
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)'); // i18n-ignore
+
+    // Every back-to-top control (fixed control + inline footer links) scrolls to
+    // the top, keeps the URL hash untouched, and moves focus to the document top.
+    const toTop = (e) => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: reduce.matches ? 'auto' : 'smooth' });
+      const body = document.body;
+      if (!body.hasAttribute('tabindex')) body.setAttribute('tabindex', '-1');
+      body.focus({ preventScroll: true });
+    };
+    document.querySelectorAll('[data-scroll-top]').forEach((el) => {
+      el.addEventListener('click', toTop);
+    });
+
+    if (!fixedBtn) return;
+
+    let visible = false;
+    const apply = (next) => {
+      if (next === visible) return;
+      visible = next;
+      fixedBtn.classList.toggle('is-visible', next);
+      fixedBtn.setAttribute('aria-hidden', next ? 'false' : 'true');
+      fixedBtn.tabIndex = next ? 0 : -1;
+      if (fixedScroll) fixedScroll.classList.toggle('fade-out', next);
+    };
+
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      if (fixedScroll) {
+        // Homepage: CONTACT >= 50% in view, or the page bottom reached.
+        let show = false;
+        const contact = document.getElementById('contact');
+        if (contact) {
+          const r = contact.getBoundingClientRect();
+          const seen = Math.min(r.bottom, window.innerHeight) - Math.max(r.top, 0);
+          show = r.height > 0 && seen / r.height >= 0.5;
+        }
+        if (!show) {
+          show = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 8;
+        }
+        apply(show);
+      } else {
+        // Long pages: after scrolling 1.5 viewport heights. Short pages that can
+        // never reach that distance (e.g. a /blog index under one viewport at
+        // 1366x650) still reveal the control at the page bottom, so it is always
+        // reachable once there is something to scroll.
+        const doc = document.documentElement;
+        const atBottom = window.scrollY + window.innerHeight >= doc.scrollHeight - 8;
+        const canScroll = doc.scrollHeight > window.innerHeight + 8;
+        apply(canScroll && (window.scrollY > window.innerHeight * 1.5 || atBottom));
+      }
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    update();
+  })();
+</script>

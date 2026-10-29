@@ -1,0 +1,65 @@
+{
+  "name": "ezequielranieri-portfolio",
+  "type": "module",
+  "version": "0.0.1",
+  "description": "Personal portfolio of Ezequiel Ranieri, AI security engineer",
+  "author": "Ezequiel Ranieri",
+  "repository": "https://github.com/ezequielranieri/ezequielranieri-portfolio",
+  "engines": {
+    "node": ">=22.22.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "npx serve dist/client",
+    "astro": "astro",
+    "test:e2e": "playwright test",
+    "test": "node scripts/test-all.mjs",
+    "test:ci": "TEST_EXCLUDE=gate:desktop node scripts/test-all.mjs",
+    "check:i18n": "node scripts/check-i18n.mjs",
+    "check:links": "node scripts/check-links.mjs",
+    "test:404": "node tests/404-locale.test.mjs",
+    "test:glyphs": "node tests/glyph-check.test.mjs",
+    "test:vitest": "npx vitest run tests/contact.test.ts tests/contact-email.test.ts tests/request-guards.test.ts tests/rate-limit.test.ts tests/turnstile.test.ts tests/scanner-self-test.test.ts",
+    "test:contact": "npx vitest run tests/contact.test.ts",
+    "test:notice": "node tests/notice.test.mjs",
+    "test:hreflang": "node tests/hreflang.test.mjs",
+    "test:notfound-meta": "node tests/notfound-meta.test.mjs",
+    "test:seo": "node tests/seo-meta.test.mjs",
+    "check:ts": "astro check",
+    "test:sitemap": "node tests/sitemap.test.mjs",
+    "test:routes": "node tests/routes-header.test.mjs",
+    "generate:og": "node scripts/generate-og.mjs"
+  },
+  "dependencies": {
+    "@astrojs/vercel": "^11.0.15",
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/syne": "^5.3.0",
+    "@upstash/ratelimit": "^2.2.0",
+    "@upstash/redis": "^1.39.0",
+    "astro": "7.4.1",
+    "gray-matter": "^4.0.3",
+    "marked": "^18.1.1",
+    "oneko": "^0.4.1",
+    "rehype": "^13.0.1",
+    "rehype-raw": "^7.0.0",
+    "rehype-slug": "^6.0.0",
+    "rehype-stringify": "^10.0.0",
+    "remark": "^15.0.1",
+    "remark-gfm": "^4.0.0",
+    "remark-rehype": "^11.1.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@playwright/test": "^1.48.0",
+    "@types/node": "^26.6.5",
+    "playwright-core": "^1.48.0",
+    "pngjs": "^7.0.0",
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.5"
+  },
+  "overrides": {
+    "path-to-regexp": "^6.3.0",
+    "zod": "^4.6.6"
+  }
+}

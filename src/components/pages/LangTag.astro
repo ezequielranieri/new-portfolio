@@ -1,0 +1,27 @@
+---
+import { getTranslator, type Locale } from '@/i18n';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = getTranslator(lang);
+const label = t('switcher.labelEn');
+---
+<span class="lang-tag" lang={lang}>{label}</span>
+
+<style>
+  .lang-tag {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: var(--micro-size);
+    font-weight: var(--micro-weight);
+    letter-spacing: var(--micro-tracking);
+    text-transform: uppercase;
+    color: var(--text-3);
+    border: 1px solid var(--line-strong);
+    padding: 0.05em 0.4em;
+    vertical-align: middle;
+  }
+</style>

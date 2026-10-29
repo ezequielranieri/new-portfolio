@@ -1,0 +1,19 @@
+version: 2
+updates:
+  # Library dependencies.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      dev-dependencies:
+        dependency-type: development
+    open-pull-requests-limit: 5
+
+  # Every npm release ships new versions of npm and settings; the Actions
+  # ecosystem moves faster than the code does.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5

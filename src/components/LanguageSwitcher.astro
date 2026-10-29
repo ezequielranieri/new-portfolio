@@ -1,0 +1,54 @@
+---
+import { url } from '@/lib/url';
+import type { Locale } from '@/i18n';
+import { getTranslator } from '@/i18n';
+
+export interface Props {
+  currentLocale: Locale;
+  currentPath: string;
+  hash?: string;
+  /**
+   * Explicit destination for the "other" locale. Used when the default
+   * route-based link would point at a page that does not exist (e.g. an
+   * English article with no Spanish translation). When omitted the link is
+   * derived from `currentPath`.
+   */
+  otherLocaleHref?: string;
+}
+
+const { currentLocale, currentPath, hash, otherLocaleHref } = Astro.props as Props;
+const otherLocale: Locale = currentLocale === 'es' ? 'en' : 'es';
+const t = getTranslator(currentLocale);
+// Each chip shows the code of the locale it points at, so the map is keyed by
+// locale, not by "current"/"other": on /es/ the active chip must read ES.
+const labels: Record<Locale, string> = {
+  en: t('switcher.labelEn'),
+  es: t('switcher.labelEs'),
+};
+const currentLabel = labels[currentLocale];
+const otherLabel = labels[otherLocale];
+// The announcement that names the other language is written in that language,
+// so a screen reader voices it in the language it is switching to.
+const switchTo = otherLocale === 'en' ? t('switcher.switchToEn') : t('switcher.switchToEs');
+// `currentPath` may arrive either as a bare route ("/blog/") or as the path of
+// the page being viewed ("/es/blog/"); the locale prefix is dropped here so
+// url() never prefixes it twice. The hash is accepted with or without its "#".
+const route = currentPath.replace(/^\/es(?=\/|$)/, '') || '/';
+const cleanHash = hash?.replace(/^#/, '');
+const otherHref = otherLocaleHref ?? url(route, cleanHash, otherLocale);
+const currentHref = url(route, cleanHash, currentLocale);
+---
+<div class="language-switcher" role="navigation" aria-label={t('switcher.ariaLabel')}>
+  <a class="lang-link" href={currentHref} lang={currentLocale} aria-current="true" data-locale={currentLocale}><span class="lang-label">{currentLabel}</span></a>
+  <span class="lang-sep" aria-hidden="true"></span>
+  <a class="lang-link" href={otherHref} lang={otherLocale} aria-label={switchTo} hreflang={otherLocale} data-locale={otherLocale}><span class="lang-label">{otherLabel}</span></a>
+</div>
+
+<script is:inline>
+  // Save the visitor's language choice when they click a switcher link.
+  document.querySelectorAll('.lang-link[data-locale]').forEach(function (link) {
+    link.addEventListener('click', function () {
+      try { localStorage.setItem('preferred-locale', link.getAttribute('data-locale')); localStorage.setItem('preferred-locale-at', String(Date.now())); } catch (e) {}
+    });
+  });
+</script>

@@ -1,0 +1,45 @@
+---
+import { formatDisplayDate, formatDateTime, type BlogListingItem } from '@/lib/blog';
+import { url } from '@/lib/url';
+import type { Locale } from '@/i18n';
+import LangTag from './pages/LangTag.astro';
+
+interface Props {
+  item: BlogListingItem;
+  locale: Locale;
+  number: number;
+  headingLevel?: 2 | 3;
+}
+
+const { item, locale, number, headingLevel = 2 } = Astro.props;
+
+// A row whose content is not in the current locale has no route of its own in
+// that locale (the post is a draft, or it only exists in English). Link to the
+// English article instead of a 404.
+const toEnglish = item.contentLocale !== locale || item.post.draft;
+const href = toEnglish
+  ? url(`/blog/${item.slug}/`, undefined, 'en')
+  : url(`/blog/${item.slug}/`, undefined, locale);
+
+// The index uses an <h2> and the homepage an <h3>; the shared row keeps both
+// page outlines and owns every row style from global.css.
+const Title = headingLevel === 3 ? 'h3' : 'h2';
+---
+
+<a class="blog-row" href={href}>
+  <div class="blog-row-meta">
+    <span class="blog-row-index">{String(number).padStart(2, '0')}</span>
+    <time class="blog-row-date" datetime={formatDateTime(item.post.date)}>{formatDisplayDate(item.post.date, locale)}</time>
+    <span class="blog-row-tag">{item.post.tags[0] || ''}</span>
+  </div>
+  <div class="blog-row-body">
+    {toEnglish && (
+      <span class="blog-row-lang"><LangTag lang="en" /></span>
+    )}
+    <Title class="blog-row-title">{item.post.title}</Title>
+    <p class="blog-row-excerpt">{item.post.excerpt}</p>
+  </div>
+  <span class="blog-row-arrow" aria-hidden="true">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"><path d="M7 17 17 7" /><path d="M7 7h10v10" /></svg>
+  </span>
+</a>

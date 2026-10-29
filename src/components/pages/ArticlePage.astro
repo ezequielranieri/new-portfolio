@@ -1,0 +1,1394 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BackToTop from '@/components/BackToTop.astro';
+import SiteHeader from '@/components/SiteHeader.astro';
+import LangTag from './LangTag.astro';
+import { getCanonicalUrl, formatDisplayDate, formatDateTime, getModifiedDate } from '@/lib/blog';
+import type { BlogPost } from '@/lib/blog';
+import { SITE_URL, SITE_NAME } from '@/config/site';
+import { url } from '@/lib/url';
+import { getTranslator, type Locale } from '@/i18n';
+import { buildArticleJsonLd } from '@/lib/jsonld';
+import { articleOgImage } from '@/lib/og';
+
+interface Props {
+  locale: Locale;
+  post: BlogPost;
+  body: any;
+  prev: { title: string; url: string } | null;
+  next: { title: string; url: string } | null;
+  postIndex: number;
+  contentLocale: Locale;
+  otherLocaleHref?: string;
+  alternates?: { locale: Locale; url: string }[];
+}
+
+const { locale, post, body, prev, next, postIndex, contentLocale, otherLocaleHref, alternates = [] } = Astro.props;
+const t = getTranslator(locale);
+
+const canonicalURL = getCanonicalUrl(locale, post.slug);
+const ogTitle = `${post.title} · ${SITE_NAME}`;
+const ogDescription = post.excerpt;
+// Card generated from the title that is actually rendered: post.lang, not the
+// route locale, because an untranslated body is shown in its own language.
+const ogImage = articleOgImage(post.lang, post.slug);
+
+// Fallback indicator: the article body is in another locale than the page.
+const showFallbackTag = contentLocale !== locale;
+
+// Revision marker: only when a manual `updatedDate` exists and post-dates publication.
+const showUpdatedDate = !!post.updatedDate && post.updatedDate.getTime() > post.date.getTime();
+
+// A body with no readable text has nothing to time.
+const bodyHasContent =
+  String(body ?? '')
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/<[^>]*>/g, '')
+    .replace(/&nbsp;/gi, ' ')
+    .trim().length > 0;
+
+// JSON-LD Article — reuses the page canonical so both always agree
+const jsonLd = buildArticleJsonLd(post, canonicalURL);
+
+// Extract h2 headings for TOC (server-side from HTML)
+// Match h2 with or without ID - if no ID, generate one from text
+const headingRegex = /<h2[^>]*>([^<]+)<\/h2>/g;
+const headings: { id: string; text: string }[] = [];
+let match;
+// First pass: collect headings with 1-based index
+while ((match = headingRegex.exec(String(body))) !== null) {
+  const text = match[1].trim();
+  const index = headings.length + 1;
+  const id = `heading-${index}`;
+  headings.push({ id, text });
+}
+
+// Add IDs to h2 elements in the HTML body for anchor linking, and remove <hr> elements
+let processedBody = String(body)
+  .replace(/<hr\s*\/?>/gi, '') // Remove <hr> elements that create duplicate dividers
+  .replace(headingRegex, (fullMatch, text) => {
+    const index = headings.findIndex(h => h.text === text.trim()) + 1;
+    const id = `heading-${index}`;
+    // Only add ID if not already present
+    if (fullMatch.includes('id=')) return fullMatch; // i18n-ignore
+    return fullMatch.replace('<h2', `<h2 id="${id}"`); // i18n-ignore
+  });
+---
+
+<style>
+  /* ===== LAYOUT ===== */
+  .article {
+    padding-top: calc(var(--header-h) + var(--section-top));
+  }
+
+  /* Same container as blog index: --container max-width, centered, page-x padding */
+  .article-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+    width: calc(100% - 2 * var(--page-x));
+    max-width: var(--container);
+    margin-inline: auto;
+    padding-inline: var(--page-x);
+  }
+
+  .article-main {
+    min-width: 0;
+  }
+
+  .article-toc {
+    display: none; /* hidden by default, shown via media queries */
+  }
+
+  /* ===== HEADER SCROLLED STATE + READING PROGRESS (article pages only) ===== */
+  /* The progress bar is drawn ON the header's border-bottom when scrolled.
+     No separate track element. Only on article pages.
+     Positioned fixed at header bottom, only visible when header has .is-scrolled. */
+  .reading-progress-bar {
+    position: fixed;
+    top: var(--header-h);
+    left: 0;
+    right: 0;
+    height: 2px;
+    width: 0%;
+    background: var(--chrome-gradient);
+    background-size: var(--chrome-text-bg-size);
+    animation: chrome-shift var(--chrome-text-duration) var(--chrome-text-ease) infinite alternate;
+    will-change: background-position, width;
+    transition: width 50ms linear, opacity 200ms var(--ease), visibility 200ms var(--ease);
+    pointer-events: none;
+    z-index: var(--z-fixed);
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reading-progress-bar {
+      animation: none;
+      background-position: 50% 50%;
+      transition: width 50ms linear, opacity 200ms var(--ease), visibility 200ms var(--ease);
+    }
+  }
+
+  /* ===== TOC SIDEBAR (base styles for mobile ≤1179.98px) ===== */
+  .article-toc {
+    display: block;
+    position: sticky;
+    top: var(--header-h);
+    max-height: none;
+    overflow: visible;
+    padding: 0;
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: var(--space-6);
+    background: var(--bg);
+    z-index: var(--z-fixed);
+  }
+
+  .toc-nav {
+    padding: var(--space-4) 0;
+  }
+
+  .toc-title {
+    font-family: var(--font-body);
+    font-size: var(--micro-size);
+    font-weight: var(--micro-weight);
+    letter-spacing: var(--micro-tracking);
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: var(--space-4);
+  }
+
+  .toc-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin: 0;
+    padding: 0;
+  }
+
+  .toc-item {
+    position: relative;
+    padding-left: var(--space-3);
+    transition: border-color var(--transition-fast);
+  }
+
+  /* Active item: vertical gradient bar on the left */
+  .toc-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--chrome-gradient);
+    background-size: var(--chrome-text-bg-size);
+    opacity: 0;
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+    will-change: opacity, transform;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .toc-item::before {
+      transition: none;
+      animation: none;
+      background-position: 50% 50%;
+    }
+  }
+
+  .toc-link {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    font-family: var(--font-body);
+    font-size: var(--small-size);
+    line-height: var(--small-line);
+    color: var(--text-3);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+    padding: var(--space-1) 0;
+  }
+
+  .toc-link:hover {
+    color: var(--text);
+  }
+
+  .toc-link.is-active {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* Active item: show the gradient bar */
+  .toc-item.is-active::before {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+
+  .toc-number {
+    font-family: var(--font-body);
+    font-size: var(--micro-size);
+    font-weight: var(--micro-weight);
+    letter-spacing: var(--micro-tracking);
+    color: var(--text-4);
+    flex-shrink: 0;
+    transition: color var(--transition-fast);
+  }
+
+  .toc-link.is-active .toc-number {
+    color: var(--chrome-cyan);
+  }
+
+  .toc-text {
+    max-width: 180px;
+    min-width: 0; /* Allow flex item to shrink */
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  @media (max-width: 1023.98px) {
+    .toc-text {
+      max-width: none; /* Remove max-width constraint on mobile */
+    }
+  }
+
+  /* ===== MOBILE TOC: Compact sticky bar ===== */
+  .toc-mobile-trigger {
+    display: none;
+  }
+
+  .toc-mobile-panel {
+    display: none;
+  }
+
+  @media (max-width: 1179.98px) {
+    .article-toc {
+      position: sticky;
+      top: var(--header-h);
+      z-index: var(--z-fixed);
+      background: var(--bg);
+      border-right: none;
+      border-bottom: 1px solid var(--line);
+      padding: 0;
+      margin-bottom: var(--space-6);
+      max-height: none;
+      overflow: visible;
+    }
+
+    .toc-nav {
+      padding: 0;
+    }
+
+    .toc-title {
+      display: none;
+    }
+
+    .toc-list {
+      display: none; /* Hidden by default, shown when panel opens */
+      flex-direction: column;
+      gap: 0;
+      border-top: 1px solid var(--line);
+      margin-top: 0;
+      padding: var(--space-2) 0;
+      background: var(--bg);
+    }
+
+    .toc-list.is-open {
+      display: flex;
+    }
+
+    .toc-item {
+      border-left: none;
+      padding: 0;
+    }
+
+    .toc-item::before {
+      display: none; /* No vertical bar in mobile panel */
+    }
+
+    .toc-link {
+      display: flex;
+      align-items: center;
+      padding: var(--space-3) var(--space-4);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 0;
+      min-height: 44px; /* Minimum touch target */
+      text-decoration: none;
+      color: var(--text-3);
+      transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
+      min-width: 0;
+      white-space: normal;
+      border-bottom: none;
+    }
+
+    .toc-link:first-child {
+      border-top: none;
+    }
+
+    .toc-link:hover,
+    .toc-link:focus-visible {
+      color: var(--text);
+      background: var(--surface-hover);
+    }
+
+    .toc-link.is-active {
+      border-color: var(--chrome-cyan);
+      color: var(--text);
+    }
+
+    .toc-number {
+      display: inline-block;
+      width: 2ch;
+      margin-right: var(--space-2);
+      font-family: var(--font-body);
+      font-size: var(--micro-size);
+      font-weight: var(--micro-weight);
+      letter-spacing: var(--micro-tracking);
+      text-transform: uppercase.
+      color: var(--text-4);
+      flex-shrink: 0;
+    }
+
+    .toc-link.is-active .toc-number {
+      color: var(--chrome-cyan).
+    }
+
+    /* Compact trigger bar */
+    .toc-mobile-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 0;
+      min-height: 44px;
+      cursor: pointer;
+      transition: border-color var(--transition-fast), background var(--transition-fast);
+    }
+
+    .toc-mobile-trigger:hover,
+    .toc-mobile-trigger:focus-visible {
+      border-color: var(--chrome-cyan);
+      background: var(--surface-hover);
+    }
+
+    .toc-mobile-trigger:focus-visible {
+      outline: 2px solid var(--text);
+      outline-offset: 2px;
+    }
+
+    .toc-mobile-current {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: var(--small-size);
+      line-height: var(--small-line);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .toc-mobile-current-number {
+      font-family: var(--font-body);
+      font-size: var(--micro-size);
+      font-weight: var(--micro-weight);
+      letter-spacing: var(--micro-tracking);
+      text-transform: uppercase;
+      color: var(--chrome-cyan);
+    }
+
+    .toc-mobile-arrow {
+      display: inline-flex;
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      color: var(--text-3);
+      transition: transform var(--transition-fast), color var(--transition-fast);
+    }
+
+    .toc-mobile-trigger[aria-expanded="true"] .toc-mobile-arrow {
+      transform: rotate(180deg);
+      color: var(--text);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .toc-mobile-arrow {
+        transition: none;
+      }
+    }
+  }
+
+  /* ===== DESKTOP: Two-column layout with fixed TOC sidebar (≥1180px) ===== */
+  @media (min-width: 1180px) {
+    .article-layout {
+      grid-template-columns: 220px minmax(0, 1fr);
+      gap: var(--space-16);
+      align-items: start;
+    }
+
+    .article-toc {
+      display: block;
+      grid-column: 1;
+      /* Fixed positioning for reliable sticky behavior relative to viewport */
+      position: fixed;
+      top: calc(var(--header-h) + var(--space-8));
+      max-height: calc(100vh - var(--header-h) - var(--space-16));
+      overflow-y: auto;
+      padding-right: var(--space-4);
+      border-right: 1px solid var(--line);
+      border-bottom: none;
+      margin-bottom: 0;
+      background: transparent;
+      width: 220px; /* Match grid column width */
+      z-index: calc(var(--z-fixed) - 1); /* Below header */
+    }
+
+    .article-main {
+      grid-column: 2;
+      /* Article content max-width ~720px for comfortable reading */
+      max-width: 720px;
+    }
+
+    /* Desktop TOC link styles (override mobile panel styles) */
+    .toc-list {
+      display: flex !important;
+    }
+
+    .toc-title {
+      display: block !important;
+    }
+
+    .toc-link {
+      display: flex;
+      align-items: baseline;
+      padding: var(--space-1) 0;
+      background: transparent;
+      border: none;
+      min-height: auto;
+      color: var(--text-3);
+      white-space: normal;
+    }
+
+    .toc-link:hover {
+      color: var(--text);
+      background: transparent;
+    }
+
+    .toc-link.is-active {
+      border-color: transparent;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .toc-number {
+      color: var(--text-4);
+    }
+
+    .toc-link.is-active .toc-number {
+      color: var(--chrome-cyan);
+    }
+
+    .toc-mobile-trigger {
+      display: none !important;
+    }
+  }
+
+  .toc-nav {
+    padding: var(--space-4) 0;
+  }
+
+  .toc-title {
+    font-family: var(--font-body);
+    font-size: var(--micro-size);
+    font-weight: var(--micro-weight);
+    letter-spacing: var(--micro-tracking);
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: var(--space-4);
+  }
+
+  .toc-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin: 0;
+    padding: 0;
+  }
+
+  .toc-item {
+    position: relative;
+    padding-left: var(--space-3);
+    transition: border-color var(--transition-fast);
+  }
+
+  /* Active item: vertical gradient bar on the left */
+  .toc-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--chrome-gradient);
+    background-size: var(--chrome-text-bg-size);
+    opacity: 0;
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+    will-change: opacity, transform;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .toc-item::before {
+      transition: none;
+      animation: none;
+      background-position: 50% 50%;
+    }
+  }
+
+  .toc-link {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    font-family: var(--font-body);
+    font-size: var(--small-size);
+    line-height: var(--small-line);
+    color: var(--text-3);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+    padding: var(--space-1) 0;
+  }
+
+  .toc-link:hover {
+    color: var(--text);
+  }
+
+  .toc-link.is-active {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* Active item: show the gradient bar */
+  .toc-item.is-active::before {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+
+  .toc-number {
+    font-family: var(--font-body);
+    font-size: var(--micro-size);
+    font-weight: var(--micro-weight);
+    letter-spacing: var(--micro-tracking);
+    color: var(--text-4);
+    flex-shrink: 0;
+    transition: color var(--transition-fast);
+  }
+
+  .toc-link.is-active .toc-number {
+    color: var(--chrome-cyan);
+  }
+
+  .toc-text {
+    max-width: 180px;
+    min-width: 0; /* Allow flex item to shrink */
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  @media (max-width: 1023.98px) {
+    .toc-text {
+      max-width: none; /* Remove max-width constraint on mobile */
+    }
+  }
+
+  /* ===== MOBILE TOC: Compact sticky bar ===== */
+  .toc-mobile-trigger {
+    display: none;
+  }
+
+  .toc-mobile-panel {
+    display: none;
+  }
+
+  @media (max-width: 1179.98px) {
+    .article-toc {
+      position: sticky;
+      top: var(--header-h);
+      z-index: var(--z-fixed);
+      background: var(--bg);
+      border-right: none;
+      border-bottom: 1px solid var(--line);
+      padding: 0;
+      margin-bottom: var(--space-6);
+      max-height: none;
+      overflow: visible;
+    }
+
+    .toc-nav {
+      padding: 0;
+    }
+
+    .toc-title {
+      display: none;
+    }
+
+    .toc-list {
+      display: none; /* Hidden by default, shown when panel opens */
+      flex-direction: column;
+      gap: 0;
+      border-top: 1px solid var(--line);
+      margin-top: 0;
+      padding: var(--space-2) 0;
+      background: var(--bg);
+    }
+
+    .toc-list.is-open {
+      display: flex;
+    }
+
+    .toc-item {
+      border-left: none;
+      padding: 0;
+    }
+
+    .toc-item::before {
+      display: none; /* No vertical bar in mobile panel */
+    }
+
+    .toc-link {
+      display: flex;
+      align-items: center;
+      padding: var(--space-3) var(--space-4);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 0;
+      min-height: 44px; /* Minimum touch target */
+      text-decoration: none;
+      color: var(--text-3);
+      transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
+      min-width: 0;
+      white-space: normal;
+      border-bottom: none;
+    }
+
+    .toc-link:first-child {
+      border-top: none;
+    }
+
+    .toc-link:hover,
+    .toc-link:focus-visible {
+      color: var(--text);
+      background: var(--surface-hover);
+    }
+
+    .toc-link.is-active {
+      border-color: var(--chrome-cyan);
+      color: var(--text);
+    }
+
+    .toc-number {
+      display: inline-block;
+      width: 2ch;
+      margin-right: var(--space-2);
+      font-family: var(--font-body);
+      font-size: var(--micro-size);
+      font-weight: var(--micro-weight);
+      letter-spacing: var(--micro-tracking);
+      text-transform: uppercase;
+      color: var(--text-4);
+      flex-shrink: 0;
+    }
+
+    .toc-link.is-active .toc-number {
+      color: var(--chrome-cyan);
+    }
+
+    /* Compact trigger bar */
+    .toc-mobile-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 0;
+      min-height: 44px;
+      cursor: pointer;
+      transition: border-color var(--transition-fast), background var(--transition-fast);
+    }
+
+    .toc-mobile-trigger:hover,
+    .toc-mobile-trigger:focus-visible {
+      border-color: var(--chrome-cyan);
+      background: var(--surface-hover);
+    }
+
+    .toc-mobile-trigger:focus-visible {
+      outline: 2px solid var(--text);
+      outline-offset: 2px;
+    }
+
+    .toc-mobile-current {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: var(--small-size);
+      line-height: var(--small-line);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .toc-mobile-current-number {
+      font-family: var(--font-body);
+      font-size: var(--micro-size);
+      font-weight: var(--micro-weight);
+      letter-spacing: var(--micro-tracking);
+      text-transform: uppercase;
+      color: var(--chrome-cyan);
+    }
+
+    .toc-mobile-arrow {
+      display: inline-flex;
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      color: var(--text-3);
+      transition: transform var(--transition-fast), color var(--transition-fast);
+    }
+
+    .toc-mobile-trigger[aria-expanded="true"] .toc-mobile-arrow {
+      transform: rotate(180deg);
+      color: var(--text);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .toc-mobile-arrow {
+        transition: none;
+      }
+    }
+  }
+
+  /* ===== ARTICLE HEADER ===== */
+  .article-header {
+    margin-bottom: var(--gap-header-body);
+  }
+
+  .article-eyebrow {
+    margin-bottom: var(--space-2);
+    white-space: nowrap;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-body);
+    font-size: var(--micro-size);
+    font-weight: var(--micro-weight);
+    letter-spacing: var(--micro-tracking);
+    text-transform: uppercase;
+    color: var(--text-3);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+    white-space: normal; /* Allow wrapping on narrow screens */
+  }
+
+  .back-link:hover {
+    color: var(--text);
+  }
+
+  .back-link:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+
+  .article-label {
+    font-family: var(--font-body);
+    font-size: var(--micro-size);
+    font-weight: var(--micro-weight);
+    letter-spacing: var(--micro-tracking);
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: var(--space-4);
+    white-space: normal; /* Allow wrapping on narrow screens */
+  }
+
+  .article-title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: var(--text);
+    margin: 0 0 var(--space-6);
+    max-width: 100%;
+    overflow-wrap: break-word;
+  }
+
+  .article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--font-body);
+    font-size: var(--micro-size);
+    color: var(--text-4);
+    margin-bottom: var(--space-6);
+  }
+
+  .article-tag {
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-2);
+  }
+
+  .meta-separator {
+    color: var(--line-strong);
+  }
+
+  .article-divider {
+    border: none;
+    border-top: 1px solid var(--line-strong);
+    margin: 0;
+  }
+
+  /* ===== ARTICLE FOOTER ===== */
+  .article-footer {
+    margin-top: var(--space-20);
+    padding-top: var(--space-8);
+    border-top: 1px solid var(--card-border);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+    align-items: start;
+  }
+
+  .nav-label {
+    font-family: var(--font-body);
+    font-size: var(--micro-size);
+    font-weight: var(--micro-weight);
+    letter-spacing: var(--micro-tracking);
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: var(--space-2);
+    display: block;
+  }
+
+  .nav-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1rem, 2vw, 1.375rem);
+    line-height: 1.3;
+    color: var(--text);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+
+  .nav-title:hover {
+    color: var(--text-2);
+  }
+
+  .nav-title:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 4px;
+  }
+
+  .article-footer .btn {
+    align-self: center;
+    margin-top: var(--space-4);
+  }
+
+  /* Mobile article layout */
+  @media (max-width: 1023.98px) {
+    .article-layout {
+      display: block;
+      width: calc(100% - 2 * var(--page-x));
+      max-width: var(--container);
+      margin-inline: auto;
+      padding-inline: var(--page-x);
+    }
+
+    .article-body h2::before {
+      left: 0;
+      right: 0;
+    }
+
+    .article-footer {
+      flex-direction: column;
+      gap: var(--space-6);
+      align-items: stretch;
+    }
+
+    .article-footer .btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  /* Hide SCROLL indicator on article pages */
+  @media (max-width: 1023.98px) {
+    .article .hero-scroll {
+      display: none !important;
+    }
+  }
+</style>
+
+<BaseLayout
+  title={ogTitle}
+  description={ogDescription}
+  canonicalURL={canonicalURL}
+  ogTitle={ogTitle}
+  ogDescription={ogDescription}
+  ogImage={ogImage}
+  ogType="article"
+  twitterCard="summary_large_image"
+  articlePublishedTime={post.date.toISOString()}
+  articleModifiedTime={getModifiedDate(post).toISOString()}
+  articleTags={post.tags}
+  locale={locale}
+  alternates={alternates}
+>
+  <SiteHeader locale={locale} />
+
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <!-- Reading progress bar (rendered inside header when scrolled) -->
+  <div class="reading-progress-bar" aria-hidden="true" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+
+  <!-- SECTION: ARTICLE -->
+  <section id="article" class="section article" aria-labelledby="article-title">
+    <div class="article-layout">
+      <!-- Desktop TOC sidebar / Mobile TOC -->
+      {headings.length > 0 && (
+        <aside class="article-toc" aria-label={t('article.tableOfContents')}>
+          <!-- Mobile trigger bar -->
+          <button
+            class="toc-mobile-trigger"
+            aria-expanded="false"
+            aria-controls="toc-mobile-panel"
+            aria-label={t('article.tableOfContents')}
+            type="button"
+          >
+            <span class="toc-mobile-current">
+              <span class="toc-mobile-current-number" data-toc-current-number>01</span>
+              <span data-toc-current-text>{headings[0]?.text || ''}</span>
+            </span>
+            <svg class="toc-mobile-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+
+          <nav class="toc-nav" aria-label={t('article.tableOfContents')}>
+            <p class="toc-title">{t('article.tableOfContents')}</p>
+            <ol id="toc-mobile-panel" class="toc-list">
+              {headings.map((h, i) => (
+                <li class="toc-item">
+                  <a href={`#${h.id}`} class="toc-link" data-toc-index={i + 1} aria-current={i === 0 ? 'location' : undefined}>
+                    <span class="toc-number">{String(i + 1).padStart(2, '0')}</span>
+                    <span class="toc-text">{h.text}</span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        </aside>
+      )}
+
+      <main id="main" tabindex="-1" class="article-main">
+        <header class="article-header">
+          <!-- Eyebrow: BACK TO BLOG -->
+          <p class="article-eyebrow">
+            <a href={url('/blog', undefined, locale)} class="back-link">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+              <span>{t('article.backToBlog')}</span>
+            </a>
+          </p>
+
+          <!-- Label: BLOG / NN -->
+          <p class="article-label">{t('article.labelPrefix')}{String(postIndex + 1).padStart(2, '0')}</p>
+
+          {showFallbackTag && <LangTag lang={contentLocale} />}
+
+          <h1 id="article-title" class="article-title">{post.title}</h1>
+
+          <div class="article-meta">
+            <time datetime={formatDateTime(post.date)}>{formatDisplayDate(post.date, locale)}</time>
+            {showUpdatedDate && (
+              <>
+                <span class="meta-separator" aria-hidden="true">|</span>
+                <time datetime={formatDateTime(post.updatedDate!)}>
+                  {t('article.updated', { date: formatDisplayDate(post.updatedDate!, locale) })}
+                </time>
+              </>
+            )}
+            <span class="meta-separator" aria-hidden="true">|</span>
+            <span class="article-tag">{post.tags[0] || ''}</span>
+            {bodyHasContent && (
+              <>
+                <span class="meta-separator" aria-hidden="true">|</span>
+                <span>{t('article.minRead', { m: post.readingTimeMinutes })}</span>
+              </>
+            )}
+            {post.repo && (
+              <a href="{post.repo}" target="_blank" rel="noopener noreferrer" class="article-github">
+                {locale === 'en' ? t('article.articleGithub') : t('article.articleGithub', { locale })}
+              </a>
+            )}
+          </div>
+
+          <!-- Divider between meta and body -->
+          <hr class="article-divider" />
+        </header>
+
+        <div class="article-body" set:html={processedBody} />
+
+        <footer class="article-footer">
+          {prev && (
+            <div class="nav-prev">
+              <span class="nav-label">{t('article.previousArticle')}</span>
+              <a href={prev.url} class="nav-title">{prev.title}</a>
+            </div>
+          )}
+          {next && (
+            <div class="nav-next">
+              <span class="nav-label">{t('article.nextArticle')}</span>
+              <a href={next.url} class="nav-title">{next.title}</a>
+            </div>
+          )}
+          <a href={url('/blog', undefined, locale)} class="btn">{t('article.allArticles')}</a>
+          <a class="back-to-top-inline" href="#top" data-scroll-top>{t('common.backToTop')}</a>
+        </footer>
+      </main>
+    </div>
+  </section>
+
+  <BackToTop locale={locale} />
+</BaseLayout>
+
+<script>
+  // ============================================
+  // Reading progress bar (on header border-bottom)
+  // ============================================
+  (() => {
+    const bar = document.querySelector('.reading-progress-bar');
+    const header = document.querySelector('.fixed-header');
+    if (!bar || !header) return;
+
+    const update = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? scrollTop / docHeight : 0;
+      bar.style.width = `${Math.min(100, progress * 100)}%`;
+      bar.setAttribute('aria-valuenow', Math.round(progress * 100));
+
+      // Show/hide progress bar based on header scrolled state
+      const isScrolled = header.classList.contains('is-scrolled');
+      bar.style.opacity = isScrolled ? '1' : '0';
+      bar.style.visibility = isScrolled ? 'visible' : 'hidden';
+    };
+
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  })();
+
+  // ============================================
+  // TOC: Scrollspy + Active item + Mobile panel
+  // ============================================
+  (() => {
+    const tocLinks = document.querySelectorAll('.toc-link');
+    const tocItems = document.querySelectorAll('.toc-item');
+    const mobileTrigger = document.querySelector('.toc-mobile-trigger');
+    const mobilePanel = document.querySelector('.toc-list');
+    const currentNumberEl = document.querySelector('[data-toc-current-number]');
+    const currentTextEl = document.querySelector('[data-toc-current-text]');
+
+    if (!tocLinks.length) return;
+
+    // Map links to heading elements
+    const headingElements = Array.from(tocLinks).map(link => {
+      const id = link.getAttribute('href')?.slice(1);
+      return id ? document.getElementById(id) : null;
+    }).filter(Boolean) as Element[];
+
+    if (!headingElements.length) return;
+
+    // Flag to prevent scrollspy during programmatic scroll
+    let isProgrammaticScroll = false;
+    // Prevent scrollspy from overriding hash-activated item on initial load
+    // Check hash dynamically since client-side navigation may not re-run script
+    const initialHashHandled = () => !!location.hash;
+
+    // ---- Scrollspy: section active when h2 crosses ~25% from top of viewport ----
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (isProgrammaticScroll || initialHashHandled()) return;
+        
+        // Find all intersecting headings
+        const intersecting = entries
+          .filter(e => e.isIntersecting)
+          .map(e => headingElements.indexOf(e.target))
+          .filter(i => i >= 0)
+          .sort((a, b) => a - b);
+
+        if (intersecting.length > 0) {
+          // The active section is the LAST one that crossed the threshold
+          const activeIndex = intersecting[intersecting.length - 1];
+          setActiveItem(activeIndex, 'observer');
+        }
+      },
+      { rootMargin: '-25% 0px -70% 0px', threshold: 0 }
+    );
+
+    headingElements.forEach(h => observer.observe(h));
+
+    // Allow scrollspy after first user scroll
+    let hashHandled = !!location.hash;
+    window.addEventListener('scroll', () => {
+      hashHandled = false;
+    }, { once: true, passive: true });
+
+    // ---- Handle page end: activate last item ----
+    const checkPageEnd = () => {
+      if (isProgrammaticScroll || initialHashHandled()) return;
+      const scrollTop = window.scrollY + window.innerHeight;
+      const docHeight = document.documentElement.scrollHeight;
+      if (scrollTop >= docHeight - 50) {
+        setActiveItem(headingElements.length - 1, 'checkPageEnd');
+      }
+    };
+    window.addEventListener('scroll', checkPageEnd, { passive: true });
+
+    // ---- Set active item ----
+    function setActiveItem(index: number, source = 'unknown') {
+      tocLinks.forEach((l, i) => {
+        const active = i === index;
+        l.classList.toggle('is-active', active);
+        // Keep the simple document structure observable to AT: exactly the
+        // active entry carries aria-current, nothing carries listbox/option
+        // roles.
+        if (active) l.setAttribute('aria-current', 'location');
+        else l.removeAttribute('aria-current');
+      });
+      tocItems.forEach((item, i) => item.classList.toggle('is-active', i === index));
+
+      // Update mobile trigger text
+      if (currentNumberEl && currentTextEl && tocLinks[index]) {
+        currentNumberEl.textContent = String(index + 1).padStart(2, '0');
+        currentTextEl.textContent = tocLinks[index].querySelector('.toc-text')?.textContent || '';
+      }
+
+      // Scroll active item into view in TOC (desktop)
+      const activeLink = tocLinks[index];
+      if (activeLink) {
+        const tocNav = document.querySelector('.toc-nav');
+        const isMobile = window.matchMedia('(max-width: 1179.98px)').matches;
+        if (!isMobile && tocNav) {
+          activeLink.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }
+    }
+
+    // ---- Initial activation: first item at scrollY=0, or from hash ----
+    if (location.hash) {
+      const hashIndex = Array.from(tocLinks).findIndex(l => l.getAttribute('href') === location.hash);
+      if (hashIndex >= 0) {
+        setActiveItem(hashIndex);
+      }
+    } else {
+      // Default to first item at page top
+      setActiveItem(0);
+    }
+
+    // ---- Click handling: smooth scroll + hash update ----
+    tocLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        const href = link.getAttribute('href');
+        if (!href || !href.startsWith('#')) return;
+        const target = document.querySelector(href);
+        if (target) {
+          e.preventDefault();
+          // Prevent scrollspy from interfering during smooth scroll
+          isProgrammaticScroll = true;
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          // Update active state immediately
+          const index = Array.from(tocLinks).indexOf(link);
+          setActiveItem(index);
+          // Update hash without jumping
+          history.replaceState(null, '', href);
+          // Close mobile panel
+          closeMobilePanel();
+          // Re-enable scrollspy after scroll completes
+          setTimeout(() => { isProgrammaticScroll = false; }, 800);
+        }
+      });
+    });
+
+    // ---- Mobile panel toggle ----
+    function toggleMobilePanel() {
+      const isOpen = mobileTrigger?.getAttribute('aria-expanded') === 'true';
+      mobileTrigger?.setAttribute('aria-expanded', String(!isOpen));
+      mobilePanel?.classList.toggle('is-open', !isOpen);
+    }
+
+    function closeMobilePanel() {
+      mobileTrigger?.setAttribute('aria-expanded', 'false');
+      mobilePanel?.classList.remove('is-open');
+    }
+
+    mobileTrigger?.addEventListener('click', toggleMobilePanel);
+
+    // Handle hash changes (client-side navigation)
+    const handleHashChange = () => {
+      if (location.hash) {
+        const hashIndex = Array.from(tocLinks).findIndex(l => l.getAttribute('href') === location.hash);
+        if (hashIndex >= 0) {
+          setActiveItem(hashIndex, 'hashchange');
+        }
+      }
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    // Also handle initial hash on load (in case script runs after hash is set)
+    handleHashChange();
+
+    // Close panel on outside click
+    document.addEventListener('click', (e) => {
+      const target = e.target as Node;
+      if (mobilePanel?.classList.contains('is-open') &&
+          mobileTrigger &&
+          !mobileTrigger.contains(target) &&
+          !mobilePanel.contains(target)) {
+        closeMobilePanel();
+      }
+    });
+
+    // Close panel on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobilePanel?.classList.contains('is-open')) {
+        closeMobilePanel();
+        mobileTrigger?.focus();
+      }
+    });
+
+    // ---- Sync mobile trigger on scroll (debounced) ----
+    let syncTimeout: number;
+    window.addEventListener('scroll', () => {
+      clearTimeout(syncTimeout);
+      syncTimeout = window.setTimeout(() => {
+        // The scrollspy already calls setActiveItem which updates the trigger
+      }, 50);
+    }, { passive: true });
+  })();
+
+  // ============================================
+  // Copy code button functionality
+  // ============================================
+  document.addEventListener('DOMContentLoaded', () => {
+    const codeBlocks = document.querySelectorAll('.code-block');
+    codeBlocks.forEach(block => {
+      const pre = block.querySelector('pre');
+      if (!pre) return;
+      const btn = document.createElement('button');
+      btn.className = 'code-copy-btn';
+      btn.setAttribute('aria-label', 'Copy code');
+      btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+      btn.style.cssText = `
+        position: absolute;
+        top: var(--space-2);
+        right: var(--space-2);
+        width: 28px;
+        height: 28px;
+        background: var(--surface-hover);
+        border: 1px solid var(--line);
+        border-radius: 0;
+        opacity: 0;
+        transition: opacity var(--transition-fast);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--text-4);
+      `;
+      block.style.position = 'relative';
+      block.appendChild(btn);
+
+      block.addEventListener('mouseenter', () => btn.style.opacity = '1');
+      block.addEventListener('mouseleave', () => btn.style.opacity = '0');
+
+      btn.addEventListener('click', async () => {
+        const code = pre.querySelector('code');
+        if (!code) return;
+        try {
+          await navigator.clipboard.writeText(code.innerText);
+          btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+          btn.style.background = 'var(--chrome-cyan)';
+          btn.style.borderColor = 'var(--chrome-cyan)';
+          btn.style.color = 'var(--bg)';
+          setTimeout(() => {
+            btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+            btn.style.background = '';
+            btn.style.borderColor = '';
+            btn.style.color = '';
+          }, 1500);
+        } catch (e) {
+          console.error('Copy failed:', e);
+        }
+      });
+    });
+  });
+
+  // ============================================
+  // Mark callout labels (strong as first child of p, followed by text starting with ":")
+  // ============================================
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.article-body p > strong:first-child').forEach(strong => {
+      const text = strong.textContent.trim();
+      const nextText = strong.nextSibling?.textContent?.trimStart() || '';
+      const isLabel = text.length <= 40 && (text.endsWith(':') || nextText.startsWith(':'));
+      if (isLabel) {
+        strong.classList.add('callout-label');
+        if (text.endsWith(':')) {
+          strong.textContent = text.slice(0, -1);
+        }
+        // Remove leading colon from next text node
+        if (nextText.startsWith(':')) {
+          const nextNode = strong.nextSibling;
+          if (nextNode && nextNode.nodeType === Node.TEXT_NODE) {
+            nextNode.textContent = nextNode.textContent.slice(1);
+          }
+        }
+      }
+    });
+  });
+
+  // ============================================
+  // Add section numbers to h2 elements (01, 02, etc.)
+  // ============================================
+  document.addEventListener('DOMContentLoaded', () => {
+    const h2s = document.querySelectorAll('.article-body h2');
+    h2s.forEach((h2, index) => {
+      const number = String(index + 1).padStart(2, '0');
+      const span = document.createElement('span');
+      span.className = 'section-number';
+      span.textContent = number + ' ';
+      h2.insertBefore(span, h2.firstChild);
+    });
+
+    // Add scroll-margin-top to h2 elements so they don't get hidden behind fixed header
+    h2s.forEach(h2 => {
+      h2.style.scrollMarginTop = 'calc(var(--header-h) + var(--space-6))';
+    });
+  });
+</script>

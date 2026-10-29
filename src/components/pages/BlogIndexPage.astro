@@ -1,0 +1,189 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BackToTop from '@/components/BackToTop.astro';
+import BlogRow from '@/components/BlogRow.astro';
+import { getBlogListing, getBlogIndexCanonicalUrl } from '@/lib/blog';
+import { SITE_NAME, SITE_DESCRIPTION } from '@/config/site';
+import { url, absoluteUrl } from '@/lib/url';
+import { getTranslator, type Locale } from '@/i18n';
+import { buildBlogJsonLd } from '@/lib/jsonld';
+import SiteHeader from '@/components/SiteHeader.astro';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getTranslator(locale);
+
+const listing = await getBlogListing(locale);
+
+const canonicalURL = getBlogIndexCanonicalUrl(locale);
+const ogTitle = t('blog.meta.title');
+const ogDescription = t('home.blog.subtitle');
+---
+
+<BaseLayout
+  title={ogTitle}
+  description={ogDescription}
+  canonicalURL={canonicalURL}
+  ogTitle={ogTitle}
+  ogDescription={ogDescription}
+  ogType="website"
+  twitterCard="summary_large_image"
+  locale={locale}
+  alternates={[
+    { locale: 'en', url: absoluteUrl('/blog/') },
+    { locale: 'es', url: absoluteUrl('/es/blog/') },
+  ]}
+>
+  <SiteHeader locale={locale} />
+
+  <!-- SEO: JSON-LD Blog -->
+  <script type="application/ld+json" set:html={JSON.stringify(buildBlogJsonLd(listing.map((item) => item.post), locale))}></script>
+
+  <!-- SECTION: BLOG INDEX -->
+  <section id="blog" class="section blog" aria-labelledby="blog-title">
+    <main id="main" tabindex="-1" class="blog-content">
+      <header class="section-head blog-header">
+        <p class="section-label">{t('nav.blog')}</p>
+        <h1 id="blog-title" class="section-title">{t('nav.blog')}</h1>
+        <p class="section-subtitle">{t('home.blog.subtitle')}</p>
+      </header>
+
+      <p id="sin-traduccion" class="blog-notice" hidden>{t('switcher.noticeNoTranslation')}</p>
+
+      <div class="blog-list">
+        {listing.map((item, index) => (
+          <BlogRow item={item} locale={locale} number={index + 1} headingLevel={2} />
+        ))}
+      </div>
+
+      {listing.length === 0 && (
+        <p class="blog-empty">{t('blog.empty')}</p>
+      )}
+
+      <div class="blog-footer-links">
+        <a class="back-home" href={url('/', undefined, locale)}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          <span>{t('blog.backToHome')}</span>
+        </a>
+        <a class="back-to-top-inline" href="#top" data-scroll-top>{t('common.backToTop')}</a>
+      </div>
+    </main>
+  </section>
+
+  <BackToTop locale={locale} />
+</BaseLayout>
+
+<script>
+  // Reveal the "available in English only" notice only when the page is opened
+  // through the untranslated-article link (…/es/blog/#sin-traduccion).
+  if (location.hash === '#sin-traduccion') {
+    const notice = document.querySelector('.blog-notice');
+    if (notice) notice.removeAttribute('hidden');
+  }
+</script>
+
+<style>
+  /* Explicit box: `.blog-content` is a flex child of `.blog`, so its width has
+     to be declared instead of inferred, and this surface has no left-side fixed
+     overlays that reserve a gutter. */
+  .blog-content {
+    width: calc(100% - 2 * var(--page-x));
+    max-width: var(--container);
+    margin-inline: auto;
+  }
+
+  .section-head {
+    text-align: left;
+    margin-bottom: var(--gap-header-body);
+  }
+
+  .section-label {
+    font-family: var(--font-body);
+    font-size: var(--micro-size);
+    font-weight: var(--micro-weight);
+    letter-spacing: var(--micro-tracking);
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: var(--space-2);
+    display: block;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(2.5rem, 7.95vw, 4.5rem);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: var(--text);
+    margin: 0;
+  }
+
+  .section-subtitle {
+    font-family: var(--font-body);
+    font-size: var(--body-size);
+    line-height: var(--body-line);
+    color: var(--text-2);
+    margin-top: var(--space-3);
+    max-width: 40ch;
+  }
+
+  .blog-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .blog-empty {
+    text-align: center;
+    padding: var(--space-12) 0;
+    color: var(--text-3);
+  }
+
+  /* BACK TO HOME / BACK TO TOP share one row below the list. */
+  .blog-footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+    margin-top: var(--space-8);
+  }
+
+  /* BACK TO HOME link */
+  .back-home {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0;
+    font-family: var(--font-body);
+    font-size: var(--micro-size);
+    font-weight: var(--micro-weight);
+    letter-spacing: var(--micro-tracking);
+    text-transform: uppercase;
+    color: var(--text-3);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+
+  .back-home:hover {
+    color: var(--text);
+  }
+
+  .back-home:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+
+  /* Mobile adjustments */
+  @media (max-width: 1023.98px) {
+    /* The head already stacks through the global `.blog-header` tier; only the
+       duplicated BLOG micro-label needs to go. */
+    .section-label {
+      display: none;
+    }
+  }
+</style>
