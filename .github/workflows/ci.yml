@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
 
 concurrency:
@@ -44,8 +44,8 @@ jobs:
       - name: Dependency audit (high and above)
         run: npm audit --audit-level=high
 
-      - name: Playwright gates — chromium, firefox, webkit (with-deps)
-        run: npx playwright test --with-deps --project=chromium --project=firefox --project=webkit
+      # E2E (Playwright) is intentionally omitted: there is no playwright.config
+      # and no spec files yet. Re-add this step when the first spec lands.
 
       - name: Gitleaks
         uses: gitleaks/gitleaks-action@v3
@@ -55,7 +55,7 @@ jobs:
 
   dependabot-auto-approve:
     runs-on: ubuntu-latest
-    if: github.repository == 'owner/this-repo'
+    if: github.repository == 'ezequielranieri/new-portfolio'
     steps:
       - uses: actions/checkout@v7
       - name: Auto-approve Dependabot PRs
