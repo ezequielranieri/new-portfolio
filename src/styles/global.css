@@ -377,6 +377,10 @@ body {
   text-transform: uppercase;
   color: var(--text);
   text-decoration: none;
+  /* 44px minimum touch target (WCAG 2.5.5) without changing the visual size */
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
 }
 
 .nav {
@@ -394,6 +398,10 @@ body {
   text-decoration: none;
   transition: color var(--transition-fast);
   position: relative;
+  /* 44px minimum touch target (WCAG 2.5.5) without changing the visual text size */
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
 }
 
 .nav-link::after {
@@ -471,6 +479,10 @@ body {
   text-decoration: none;
   color: var(--text-3);
   transition: color var(--transition-fast);
+  /* 44px minimum touch target (WCAG 2.5.5) without changing the visual text size */
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
 }
 
 .lang-label {
@@ -706,9 +718,10 @@ body {
 .hiw-header,
 .contact-header {
   display: flex;
-  align-items: baseline;
+  align-items: last baseline;
   justify-content: space-between;
   gap: 2rem;
+  border-top: 1px solid var(--line);
 }
 
 .section-title,
@@ -736,8 +749,7 @@ body {
   line-height: 1.5;
   text-transform: uppercase;
   color: var(--text-3);
-  max-width: 22rem;
-  text-align: right;
+  white-space: nowrap;
   margin: 0;
 }
 
@@ -756,6 +768,15 @@ body {
   .contact-subtitle {
     text-align: left;
     max-width: none;
+  }
+
+  /* The desktop rule keeps section subtitles on one line; below 768px the
+     label is wider than the viewport, so it has to wrap instead of clipping. */
+  .blog-subtitle,
+  .section-subtitle,
+  .hiw-subtitle,
+  .contact-subtitle {
+    white-space: normal;
   }
 }
 
@@ -1343,9 +1364,6 @@ body {
 
 .hiw-tab {
   display: grid;
-  /* Two tracks: index | name. minmax(0, 1fr) drops the bare-fr min-content
-     floor so the name can shrink instead of forcing the row wider than the
-     menu. */
   grid-template-columns: auto minmax(0, 1fr);
   align-items: baseline;
   column-gap: 1.25rem;
@@ -1358,17 +1376,6 @@ body {
   font: inherit;
   text-align: left;
   cursor: pointer;
-}
-
-.hiw-tab:first-child {
-  border-top: 1px solid var(--card-border);
-}
-
-.hiw-tab-index {
-  font-family: var(--font-body);
-  font-size: var(--micro-size);
-  letter-spacing: var(--micro-tracking);
-  color: var(--text-3);
 }
 
 .hiw-tab-name {
@@ -1667,6 +1674,46 @@ body {
   border-bottom: 1px solid var(--card-border);
 }
 
+.contact-cv-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.contact-cv-label {
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  font-weight: 500;
+  letter-spacing: var(--micro-tracking);
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.contact-cv-value {
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  font-weight: 400;
+  font-style: normal;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: var(--micro-tracking);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  display: inline-block;
+}
+
+.contact-cv-value:hover {
+  border-bottom: 1px solid var(--text);
+}
+
+.contact-cv-value:focus-visible {
+  border-bottom: 1px solid var(--text);
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
 .contact-info-label {
   font-family: var(--font-body);
   font-size: var(--micro-size);
@@ -1683,6 +1730,29 @@ body {
   font-style: normal;
   color: var(--text);
   text-decoration: none;
+}
+
+.contact-cv-value {
+  font-family: var(--font-body);
+  font-size: var(--micro-size);
+  font-weight: 400;
+  font-style: normal;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: var(--micro-tracking);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  display: inline-block;
+}
+
+.contact-cv-value:hover {
+  border-bottom: 1px solid var(--text);
+}
+
+.contact-cv-value:focus-visible {
+  border-bottom: 1px solid var(--text);
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
 }
 
 .contact-info-link:hover,
@@ -2507,6 +2577,10 @@ html[data-notfound-locale='es'] [data-notfound-locale='en'] {
     column-gap: 1rem;
     row-gap: 0;
     padding: 1.5rem 0;
+    /* Cancel the desktop bleed: below 1024px the row must align with the page
+       gutter, otherwise the negative margin pushes content outside the
+       viewport once the page padding is smaller than the bleed. */
+    margin-inline: 0;
   }
 
   .blog-row-meta {
@@ -3781,7 +3855,7 @@ html[data-notfound-locale='es'] [data-notfound-locale='en'] {
 .project-card:focus-visible .project-card-github a {
   color: var(--text);
 }
-a[href*="github.com"] { margin-right: 2rem; margin-top: 1rem; }
+a[href*="github.com"]:not(.article-github) { margin-right: 2rem; margin-top: 1rem; }
 
 .form-privacy-new {
   font-size: var(--micro-size);
@@ -3791,4 +3865,19 @@ a[href*="github.com"] { margin-right: 2rem; margin-top: 1rem; }
   line-height: 1.5;
   max-width: 30ch;
   margin: 0.5rem 0;
+}
+
+/* ===== NARROW VIEWPORT (≤359.98px): prevent clipping of long titles =====
+   At 320px the ES section title "CONTACTO" (308px at 2rem) overflows the
+   280px content column and gets clipped by body overflow-x:hidden, and the
+   "CERTIFICACIONES" tab label (237px at 1rem) overflows its 223px cell.
+   Both fit at 360px, so the override only applies below 360. */
+@media (max-width: 359.98px) {
+  .contact-title {
+    font-size: 1.75rem;
+  }
+
+  .hiw-tab-name {
+    font-size: 0.875rem;
+  }
 }

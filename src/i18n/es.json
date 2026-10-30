@@ -197,8 +197,7 @@
     "previousArticle": "ART\u00cdCULO ANTERIOR",
     "nextArticle": "ART\u00cdCULO SIGUIENTE",
     "allArticles": "VER ART\u00cdCULOS",
-    "tableOfContents": "\u00cdNDICE",
-    "articleGithub": "VER EN GITHUB \u2197"
+    "tableOfContents": "\u00cdNDICE"
   },
   "notFound": {
     "meta": {
@@ -218,8 +217,8 @@
   "switcher": {
     "labelEn": "EN",
     "labelEs": "ES",
-    "switchToEn": "Switch to English",
-    "switchToEs": "Cambiar a espa\u00f1ol",
+    "switchToEn": "Cambiar a inglés",
+    "switchToEs": "Cambiar a español",
     "ariaLabel": "Selector de idioma",
     "noticeNoTranslation": "ART\u00cdCULO DISPONIBLE SOLO EN INGL\u00c9S"
   }

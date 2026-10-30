@@ -946,6 +946,18 @@ let processedBody = String(body)
       display: none !important;
     }
   }
+
+  /* The desktop clamp bottoms out at 1.75rem, which is wider than the content
+     column below ~430px. `overflow-wrap: break-word` then splits words
+     mid-syllable (SANDBOXIN / G). Scale the title to the available width
+     instead. The divisor is measured: the longest uppercase word in the
+     current articles renders at ~0.72em per character, so 12 characters fit
+     in the space left by the 5rem of combined side padding. */
+  @media (max-width: 430px) {
+    .article-title {
+      font-size: clamp(1rem, calc((100vw - 5rem) / 12), 1.75rem);
+    }
+  }
 </style>
 
 <BaseLayout
@@ -1043,9 +1055,12 @@ let processedBody = String(body)
               </>
             )}
             {post.repo && (
-              <a href="{post.repo}" target="_blank" rel="noopener noreferrer" class="article-github">
-                {locale === 'en' ? t('article.articleGithub') : t('article.articleGithub', { locale })}
-              </a>
+              <>
+                <span class="meta-separator" aria-hidden="true">|</span>
+                <a href={post.repo} target="_blank" rel="noopener noreferrer" class="article-github" aria-label={locale === 'en' ? 'View on GitHub' : 'Ver en GitHub'}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.305-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                </a>
+              </>
             )}
           </div>
 
@@ -1091,13 +1106,13 @@ let processedBody = String(body)
       const scrollTop = window.scrollY;
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
       const progress = docHeight > 0 ? scrollTop / docHeight : 0;
-      bar.style.width = `${Math.min(100, progress * 100)}%`;
-      bar.setAttribute('aria-valuenow', Math.round(progress * 100));
+      (bar as HTMLElement).style.width = `${Math.min(100, progress * 100)}%`;
+      bar.setAttribute('aria-valuenow', String(Math.round(progress * 100)));
 
       // Show/hide progress bar based on header scrolled state
       const isScrolled = header.classList.contains('is-scrolled');
-      bar.style.opacity = isScrolled ? '1' : '0';
-      bar.style.visibility = isScrolled ? 'visible' : 'hidden';
+      (bar as HTMLElement).style.opacity = isScrolled ? '1' : '0';
+      (bar as HTMLElement).style.visibility = isScrolled ? 'visible' : 'hidden';
     };
 
     window.addEventListener('scroll', update, { passive: true });
@@ -1278,7 +1293,7 @@ let processedBody = String(body)
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && mobilePanel?.classList.contains('is-open')) {
         closeMobilePanel();
-        mobileTrigger?.focus();
+        (mobileTrigger as HTMLElement).focus();
       }
     });
 
@@ -1321,7 +1336,7 @@ let processedBody = String(body)
         cursor: pointer;
         color: var(--text-4);
       `;
-      block.style.position = 'relative';
+      (block as HTMLElement).style.position = 'relative';
       block.appendChild(btn);
 
       block.addEventListener('mouseenter', () => btn.style.opacity = '1');
@@ -1333,14 +1348,14 @@ let processedBody = String(body)
         try {
           await navigator.clipboard.writeText(code.innerText);
           btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-          btn.style.background = 'var(--chrome-cyan)';
-          btn.style.borderColor = 'var(--chrome-cyan)';
-          btn.style.color = 'var(--bg)';
+          (btn as HTMLElement).style.background = 'var(--chrome-cyan)';
+          (btn as HTMLElement).style.borderColor = 'var(--chrome-cyan)';
+          (btn as HTMLElement).style.color = 'var(--bg)';
           setTimeout(() => {
             btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
-            btn.style.background = '';
-            btn.style.borderColor = '';
-            btn.style.color = '';
+            (btn as HTMLElement).style.background = '';
+            (btn as HTMLElement).style.borderColor = '';
+            (btn as HTMLElement).style.color = '';
           }, 1500);
         } catch (e) {
           console.error('Copy failed:', e);
@@ -1366,6 +1381,7 @@ let processedBody = String(body)
         if (nextText.startsWith(':')) {
           const nextNode = strong.nextSibling;
           if (nextNode && nextNode.nodeType === Node.TEXT_NODE) {
+            // @ts-expect-error
             nextNode.textContent = nextNode.textContent.slice(1);
           }
         }
@@ -1388,7 +1404,7 @@ let processedBody = String(body)
 
     // Add scroll-margin-top to h2 elements so they don't get hidden behind fixed header
     h2s.forEach(h2 => {
-      h2.style.scrollMarginTop = 'calc(var(--header-h) + var(--space-6))';
+      (h2 as HTMLElement).style.scrollMarginTop = 'calc(var(--header-h) + var(--space-6))';
     });
   });
 </script>

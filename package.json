@@ -15,7 +15,7 @@
     "astro": "astro",
     "test:e2e": "playwright test",
     "test": "node scripts/test-all.mjs",
-    "test:ci": "TEST_EXCLUDE=gate:desktop node scripts/test-all.mjs",
+    "test:ci": "node scripts/test-all.mjs",
     "check:i18n": "node scripts/check-i18n.mjs",
     "check:links": "node scripts/check-links.mjs",
     "test:404": "node tests/404-locale.test.mjs",

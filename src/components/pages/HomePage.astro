@@ -798,8 +798,8 @@ const HOW_I_WORK: HIWCategory[] = [
           const rect = card.getBoundingClientRect();
           const mx = x - rect.left;
           const my = y - rect.top;
-          card.style.setProperty('--mx', mx + 'px');
-          card.style.setProperty('--my', my + 'px');
+          (card as HTMLElement).style.setProperty('--mx', mx + 'px');
+          (card as HTMLElement).style.setProperty('--my', my + 'px');
         };
 
         card.addEventListener('mousemove', (e) => {

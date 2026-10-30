@@ -1,5 +1,6 @@
 ---
 import ArticlePage from '@/components/pages/ArticlePage.astro';
+import { getTranslator, type Locale } from '@/i18n';
 import { getBlogPosts, getAdjacentPosts, getTranslationMap } from '@/lib/blog';
 import { renderMarkdown } from '@/lib/markdown';
 import { absoluteUrl } from '@/lib/url';
@@ -28,7 +29,7 @@ const body = await renderMarkdown((post as any).body ?? '');
 // exists, send the ES link to the Spanish index and flag the untranslated
 // article so the index can surface its notice.
 const esSlug = (await getTranslationMap())[post.translationKey]?.es;
-const alternates = [{ locale: 'en', url: absoluteUrl(`/blog/${post.slug}/`) }];
+const alternates = [{ locale: 'en' as Locale, url: absoluteUrl(`/blog/${post.slug}/`) }];
 if (esSlug) {
   alternates.push({ locale: 'es', url: absoluteUrl(`/es/blog/${esSlug}/`) });
 }

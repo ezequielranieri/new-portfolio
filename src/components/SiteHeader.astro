@@ -119,7 +119,7 @@ const t = getTranslator(locale);
     const menuClose = document.querySelector('.menu-close');
     const menuLinks = Array.from(document.querySelectorAll('.mobile-menu-link'));
     const focusableSelectors = 'a[href], button, [tabindex]:not([tabindex="-1"])'; // i18n-ignore
-    let lastFocused = null;
+    let lastFocused: HTMLElement | null = null;
     let isOpen = false;
 
     const lockScroll = () => {
@@ -131,7 +131,7 @@ const t = getTranslator(locale);
 
     const openMenu = () => {
       if (!mobileMenu) return;
-      lastFocused = document.activeElement;
+      lastFocused = document.activeElement as HTMLElement | null;
       mobileMenu.hidden = false;
       menuToggle && menuToggle.setAttribute('aria-expanded', 'true');
       lockScroll();
@@ -195,8 +195,8 @@ const t = getTranslator(locale);
           return el instanceof HTMLElement && el.offsetWidth > 0 && el.offsetHeight > 0 && !el.hidden && el.getAttribute('aria-hidden') !== 'true';
         });
         if (focusables.length === 0) return;
-        const first = focusables[0];
-        const last = focusables[focusables.length - 1];
+        const first = focusables[0] as HTMLElement;
+        const last = focusables[focusables.length - 1] as HTMLElement;
         const active = document.activeElement;
         if (e.shiftKey) {
           if (active === first || !mobileMenu.contains(active)) {

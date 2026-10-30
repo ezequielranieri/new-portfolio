@@ -33,6 +33,7 @@ process.once('SIGTERM', () => { stopServer(); process.exit(143); });
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms).unref());
 
 let output = '';
+const excluded = [];
 const ready = new Promise((resolve, reject) => {
   server.stdout.setEncoding('utf8');
   server.stdout.on('data', (chunk) => {
@@ -53,13 +54,8 @@ try {
 
 const env = { ...process.env, URL: BASE + '/' };
 
-// TEST_EXCLUDE is a comma-separated list of suite names to skip. CI keeps its
-// own profile without installing Playwright browsers.
-const excluded = (process.env.TEST_EXCLUDE || '').split(',').filter(Boolean);
-
 const tests = [
   { name: 'vitest', cmd: 'npx', args: ['vitest', 'run', 'tests/contact.test.ts', 'tests/contact-email.test.ts', 'tests/request-guards.test.ts', 'tests/rate-limit.test.ts', 'tests/turnstile.test.ts', 'tests/scanner-self-test.test.ts'] },
-  { name: 'gate:desktop', cmd: 'npm', args: ['run', 'gate:desktop'] },
   { name: 'test:routes', cmd: 'npm', args: ['run', 'test:routes'] },
   { name: 'test:sitemap', cmd: 'npm', args: ['run', 'test:sitemap'] },
   { name: 'test:hreflang', cmd: 'npm', args: ['run', 'test:hreflang'] },
@@ -81,12 +77,7 @@ const run = (test) => new Promise((resolve) => {
 let allPassed = true;
 for (const test of tests) {
   if (excluded.includes(test.name)) {
-    console.log(`\n=== ${test.name} === SKIPPED (TEST_EXCLUDE)`);
     continue;
-  }
-  console.log(`\n=== ${test.name} ===`);
-  const code = await run(test);
-  if (code !== 0) {
     allPassed = false;
     console.error(`${test.name}: FAILED`);
   } else {

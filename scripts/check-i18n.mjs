@@ -321,12 +321,9 @@ const IDENTICAL_ALLOWLIST = new Map([
   ['home.stack.testing.text', 'stack-list'],
   ['home.stack.tooling.text', 'stack-list'],
 
-  // switcher-aria (4) - the two language codes plus the two announcements,
-  // each written in the language it points at, so they are equal by design.
+  // switcher-aria (2) - the two language codes, each written in the language it points at
   ['switcher.labelEn', 'switcher-aria'],
   ['switcher.labelEs', 'switcher-aria'],
-  ['switcher.switchToEn', 'switcher-aria'],
-  ['switcher.switchToEs', 'switcher-aria'],
 
   // NOTE: These are NOW TRANSLATED (removed from allowlist):
   // home.portfolio.subtitle -> "HOLA, SOY EZEQUIEL RANIERI · BACKEND & AI SECURITY ENGINEER"
@@ -487,8 +484,28 @@ if (problems.lengthReview.length) {
   console.log(`\nSPANISH >30% LONGER (${problems.lengthReview.length})`);
   for (const line of cap(problems.lengthReview)) console.log(`  ${line}`);
 }
+const missingKeys = [];
+const T_CALL_ALL = /t\(['"]([A-Za-z0-9_.-]+)['"]\)/g;
+
+for (const file of files) {
+  if (SKIP_DIRS.some(d => file.startsWith(d))) continue;
+  const source = readFileSync(file, 'utf8');
+  T_CALL_ALL.lastIndex = 0;
+  let m;
+  while ((m = T_CALL_ALL.exec(source))) {
+    const key = m[1];
+    const hasInEn = dicts['en'].has(key);
+    const hasInEs = dicts['es'].has(key);
+    if (!hasInEn || !hasInEs) {
+      if (!missingKeys.some(k => k === key)) {
+        missingKeys.push(key);
+      }
+    }
+  }
+}
 
 if (dynamicKeys) {
+
   console.log('\nnote: dynamic t(`…`) usage found; UNUSED keys cannot be determined reliably.');
 }
 

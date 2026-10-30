@@ -23,6 +23,7 @@ export interface BlogPost {
   body: string;
   /** Locale-aware public path, e.g. "/blog/slug/" or "/es/blog/slug/". */
   url: string;
+  repo: string | null;
 }
 
 const DEFAULT_LOCALE: Locale = 'en';
@@ -60,7 +61,8 @@ export async function getBlogPosts(locale: Locale = DEFAULT_LOCALE): Promise<Blo
     .filter((post) => !isProduction || !post.data.draft)
     .map((post) => {
       const { slug } = splitId(post.id);
-      const repo = PROJECT_REPOS[slug] || null;
+      const repoKey = slug.replace(/-([a-z0-9])/g, (_, c) => c.toUpperCase()) as keyof typeof PROJECT_REPOS;
+const repo = PROJECT_REPOS[repoKey] || null;
       const body = post.body || '';
       const wordCount = body.trim().split(/\s+/).length;
       const readingTimeMinutes = Math.max(1, Math.ceil(wordCount / BLOG.readingTimeWordsPerMinute));

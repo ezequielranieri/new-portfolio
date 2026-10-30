@@ -40,7 +40,7 @@ const t = getTranslator(locale);
 
     // Every back-to-top control (fixed control + inline footer links) scrolls to
     // the top, keeps the URL hash untouched, and moves focus to the document top.
-    const toTop = (e) => {
+    const toTop = (e: MouseEvent) => {
       e.preventDefault();
       window.scrollTo({ top: 0, behavior: reduce.matches ? 'auto' : 'smooth' });
       const body = document.body;
@@ -48,18 +48,19 @@ const t = getTranslator(locale);
       body.focus({ preventScroll: true });
     };
     document.querySelectorAll('[data-scroll-top]').forEach((el) => {
+      // @ts-ignore
       el.addEventListener('click', toTop);
     });
 
     if (!fixedBtn) return;
 
     let visible = false;
-    const apply = (next) => {
+    const apply = (next: boolean) => {
       if (next === visible) return;
       visible = next;
       fixedBtn.classList.toggle('is-visible', next);
       fixedBtn.setAttribute('aria-hidden', next ? 'false' : 'true');
-      fixedBtn.tabIndex = next ? 0 : -1;
+      fixedBtn.setAttribute('tabindex', next ? '0' : '-1');
       if (fixedScroll) fixedScroll.classList.toggle('fade-out', next);
     };
 

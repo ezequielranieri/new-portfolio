@@ -197,8 +197,7 @@
     "previousArticle": "PREVIOUS ARTICLE",
     "nextArticle": "NEXT ARTICLE",
     "allArticles": "ALL ARTICLES",
-    "tableOfContents": "CONTENTS",
-    "articleGithub": "VIEW ON GITHUB \u2197"
+    "tableOfContents": "CONTENTS"
   },
   "notFound": {
     "meta": {
@@ -219,7 +218,7 @@
     "labelEn": "EN",
     "labelEs": "ES",
     "switchToEn": "Switch to English",
-    "switchToEs": "Cambiar a espa\u00f1ol",
+    "switchToEs": "Switch to Spanish",
     "ariaLabel": "Language switcher",
     "noticeNoTranslation": "ARTICLE AVAILABLE IN ENGLISH ONLY"
   }
