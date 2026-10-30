@@ -39,7 +39,7 @@
     "@upstash/redis": "^1.39.0",
     "astro": "7.4.1",
     "gray-matter": "^4.0.3",
-    "marked": "^18.1.1",
+    "marked": "^18.1.2",
     "oneko": "^0.4.1",
     "rehype": "^13.0.1",
     "rehype-raw": "^7.0.0",
