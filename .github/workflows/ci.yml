@@ -52,15 +52,3 @@ jobs:
         env:
           # Personal accounts do not need GITLEAKS_LICENSE.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  dependabot-auto-approve:
-    runs-on: ubuntu-latest
-    if: github.repository == 'ezequielranieri/new-portfolio'
-    steps:
-      - uses: actions/checkout@v7
-      - name: Auto-approve Dependabot PRs
-        run: |
-          gh pr list --search 'is:open label:"dependencies"' |
-          gh pr merge --auto
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
