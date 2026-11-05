@@ -10,7 +10,7 @@
   },
   "hero": {
     "iam": "Soy",
-    "role": "Ingeniero en Seguridad de IA",
+    "role": "Ingeniero de software enfocado en Backend y Seguridad",
     "scroll": "Scroll",
     "heroName": "Ezequiel"
   },
@@ -32,8 +32,8 @@
   },
   "home": {
     "meta": {
-      "title": "Ezequiel Ranieri \u2014 Ingeniero en Seguridad de IA",
-      "description": "Ingeniero en seguridad de IA. Infraestructura backend y de seguridad para agentes de IA: identidad no humana, IAM, sistemas distribuidos y seguridad basada en capacidades."
+      "title": "Ezequiel Ranieri \u2014 Ingeniero de Backend y Seguridad",
+      "description": "Ingeniero de backend y seguridad que trabaja en Go: Linux, IAM, PostgreSQL y row-level security, sistemas distribuidos y seguridad de sistemas. Direcci\u00f3n a largo plazo: Trusted AI Infrastructure."
     },
     "projects": {
       "aegis": {
@@ -51,16 +51,16 @@
     },
     "portfolio": {
       "title": "Mi portfolio",
-      "subtitle": "Agentes de IA seguros \u00b7 Non-Human Identity",
+      "subtitle": "Go \u00b7 IAM \u00b7 PostgreSQL/RLS \u00b7 Sistemas distribuidos",
       "cta": "Ver todo en GitHub"
     },
     "blog": {
-      "subtitle": "Notas de ingenier\u00eda sobre agentes de IA seguros",
+      "subtitle": "Notas de ingenier\u00eda sobre backend y seguridad",
       "cta": "VER ART\u00cdCULOS",
       "emptyHome": "Primeros art\u00edculos muy pronto"
     },
     "howIWork": {
-      "subtitle": "Infraestructura de confianza para sistemas de IA aut\u00f3nomos",
+      "subtitle": "Ingenier\u00eda backend y de seguridad, con direcci\u00f3n a largo plazo hacia Trusted AI Infrastructure",
       "categories": {
         "principles": {
           "name": "PRINCIPIOS",
@@ -112,7 +112,7 @@
     },
     "contact": {
       "subtitle": "Abierto a proyectos y colaboraciones",
-      "description": "\u00bfConstru\u00eds agentes que operan sobre sistemas reales? Puedo ayudarte a dise\u00f1ar la capa de identidad, aislamiento y auditor\u00eda. Contame en qu\u00e9 trabaj\u00e1s.",
+      "description": "\u00bfTrabaj\u00e1s en servicios backend, identidad o aislamiento de datos? Puedo ayudarte a dise\u00f1ar sistemas confiables y seguros en Go. Contame en qu\u00e9 trabaj\u00e1s.",
       "info": {
         "addressLabel": "Ubicaci\u00f3n",
         "emailLabel": "EMAIL"

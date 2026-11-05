@@ -4,7 +4,7 @@
  */
 export const SITE_URL = 'https://ezequielranieri.vercel.app';
 export const SITE_NAME = 'Ezequiel Ranieri';
-export const SITE_DESCRIPTION = 'AI Security Engineer building backend & security infrastructure for AI agents: Secure AI Agents, Non-Human Identity, IAM, distributed systems, and capability-based security.';
+export const SITE_DESCRIPTION = 'Backend & Security Engineer working in Go: Linux, IAM, PostgreSQL and row-level security, distributed systems and systems security. Long-term direction: Trusted AI Infrastructure.';
 
 // Social profile URLs — update these when you have real profiles
 export const SOCIAL = {

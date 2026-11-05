@@ -118,14 +118,14 @@ function coverCard() {
     <div style="display:flex; align-items:flex-end; gap:44px; margin-top:auto;">
       <div class="wordmark" style="font-size:300px; line-height:0.78;">ER</div>
       <div style="padding-bottom:28px;">
-        <div style="font-family:'Syne',sans-serif; font-size:40px; font-weight:600; letter-spacing:-0.01em;">AI Security Engineer</div>
+        <div style="font-family:'Syne',sans-serif; font-size:40px; font-weight:600; letter-spacing:-0.01em;">Backend &amp; Security Engineer</div>
         <div style="font-size:22px; color:${C.text2}; margin-top:10px; max-width:560px; line-height:1.35;">
-          Backend &amp; security infrastructure for AI agents
+          Go &middot; Linux &middot; IAM &middot; PostgreSQL/RLS &middot; Distributed Systems
         </div>
       </div>
     </div>
     <div class="footer" style="margin-top:auto;">
-      <div class="bar"></div><b>Secure AI agents · Non-human identity · IAM</b>
+      <div class="bar"></div><b>Backend &amp; Security Engineering</b>
       <span>ezequielranieri.vercel.app</span>
     </div>
   </div>`);
@@ -168,13 +168,17 @@ async function render(html, outPath) {
   console.log('  ' + outPath.slice(ROOT.length));
 }
 
+const defaultOnly = process.argv.includes('--default-only');
+
 await render(coverCard(), join(OUT, 'default.png'));
 
-for (const article of collectArticles()) {
-  await render(
-    articleCard(article.title, article.locale),
-    join(OUT, 'blog', article.locale, `${article.slug}.png`)
-  );
+if (!defaultOnly) {
+  for (const article of collectArticles()) {
+    await render(
+      articleCard(article.title, article.locale),
+      join(OUT, 'blog', article.locale, `${article.slug}.png`)
+    );
+  }
 }
 
 await browser.close();

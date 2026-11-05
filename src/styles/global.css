@@ -2330,6 +2330,8 @@ html[data-notfound-locale='es'] [data-notfound-locale='en'] {
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    flex-wrap: wrap;
+    row-gap: var(--space-3);
     gap: 1.5rem;
     padding-top: var(--space-4);
   }
@@ -2353,7 +2355,7 @@ html[data-notfound-locale='es'] [data-notfound-locale='en'] {
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     gap: var(--space-3) var(--space-4);
     width: 100%;
@@ -2366,7 +2368,16 @@ html[data-notfound-locale='es'] [data-notfound-locale='en'] {
   .contact-footer-social {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    row-gap: var(--space-3);
+    column-gap: 0.25rem;
+    width: 100%;
+  }
+
+  /* Neutralize the global github-link margin only inside the mobile footer. */
+  #contact .contact-footer-social .social-link {
+    margin: 0;
   }
 
   .contact-footer-back {

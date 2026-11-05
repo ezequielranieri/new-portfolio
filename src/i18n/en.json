@@ -10,7 +10,7 @@
   },
   "hero": {
     "iam": "I am",
-    "role": "AI Security Engineer",
+    "role": "Backend & Security Engineer",
     "scroll": "Scroll",
     "heroName": "Ezequiel"
   },
@@ -32,8 +32,8 @@
   },
   "home": {
     "meta": {
-      "title": "Ezequiel Ranieri \u2014 AI Security Engineer",
-      "description": "AI Security Engineer. Backend & security infrastructure for AI agents: Secure AI Agents, Non-Human Identity, IAM, distributed systems, capability-based security."
+      "title": "Ezequiel Ranieri \u2014 Backend & Security Engineer",
+      "description": "Backend & Security Engineer working in Go: Linux, IAM, PostgreSQL and row-level security, distributed systems and systems security. Long-term direction: Trusted AI Infrastructure."
     },
     "projects": {
       "aegis": {
@@ -51,16 +51,16 @@
     },
     "portfolio": {
       "title": "My Portfolio",
-      "subtitle": "Secure AI Agents \u00b7 Non-Human Identity",
+      "subtitle": "Go \u00b7 IAM \u00b7 PostgreSQL/RLS \u00b7 Distributed Systems",
       "cta": "View all on GitHub"
     },
     "blog": {
-      "subtitle": "Engineering notes on secure AI agents",
+      "subtitle": "Engineering notes on backend and security",
       "cta": "VIEW ALL ARTICLES",
       "emptyHome": "First articles coming soon"
     },
     "howIWork": {
-      "subtitle": "Trust infrastructure for autonomous AI systems",
+      "subtitle": "Backend and security engineering, with a long-term focus on trusted AI infrastructure",
       "categories": {
         "principles": {
           "name": "PRINCIPLES",
@@ -112,7 +112,7 @@
     },
     "contact": {
       "subtitle": "Open to projects and collaborations",
-      "description": "Building agents that act on real systems? I can help design the identity, isolation and audit layer. Tell me what you're working on.",
+      "description": "Working on backend services, identity, or data isolation? I can help design reliable, secure systems in Go. Tell me what you're working on.",
       "info": {
         "addressLabel": "Location",
         "emailLabel": "EMAIL"

@@ -16,15 +16,14 @@ import { absoluteUrl } from './url';
  * would invent terminology nobody searches for.
  */
 const KNOWS_ABOUT = [
-  'AI security',
-  'Non-Human Identity',
-  'Identity and Access Management',
-  'capability-based security',
-  'distributed systems',
-  'SPIFFE/SPIRE',
-  'OPA/Cedar',
-  'Kubernetes',
   'Go',
+  'Backend engineering',
+  'Systems security',
+  'Linux',
+  'Identity and Access Management',
+  'PostgreSQL',
+  'Row-Level Security',
+  'Distributed systems',
 ];
 
 /**
