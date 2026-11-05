@@ -316,9 +316,10 @@ const IDENTICAL_ALLOWLIST = new Map([
 
   // stack-list (5) - every entry is a product name
   ['home.stack.runtimeInfra.text', 'stack-list'],
+  // removed: now translated
+  // ['home.stack.observability.text', 'stack-list'],
+  // ['home.stack.testing.text', 'stack-list'],
   ['home.stack.security.text', 'stack-list'],
-  ['home.stack.observability.text', 'stack-list'],
-  ['home.stack.testing.text', 'stack-list'],
   ['home.stack.tooling.text', 'stack-list'],
 
   // switcher-aria (2) - the two language codes, each written in the language it points at

@@ -1,8 +1,10 @@
 # ezequielranieri.com — portfolio
 
-Personal site of Ezequiel Ranieri, AI security engineer: a single-page portfolio,
+Personal site of Ezequiel Ranieri, Backend & Security Engineer: a single-page portfolio,
 a bilingual blog (`/` in English, `/es/` in Spanish), and a contact form backed
 by Resend.
+
+Long-term direction: Trusted AI Infrastructure.
 
 Built as a static Astro site. The only server code is the contact endpoint,
 deployed as a Vercel function.

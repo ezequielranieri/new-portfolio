@@ -51,7 +51,7 @@
     },
     "portfolio": {
       "title": "My Portfolio",
-      "subtitle": "Go \u00b7 IAM \u00b7 PostgreSQL/RLS \u00b7 Distributed Systems",
+      "subtitle": "Go \u00b7 IAM \u00b7 PostgreSQL \u00b7 Distributed Systems",
       "cta": "View all on GitHub"
     },
     "blog": {
@@ -67,23 +67,23 @@
           "items": {
             "securityFirst": {
               "name": "Security First",
-              "text": "Threat modeling from day 0. Capability-based security, zero-trust, least privilege by default."
+              "text": "Threat modeling from day one. Least privilege, capability-based access, and defense in depth."
             },
             "hexagonalArchitecture": {
               "name": "Hexagonal Architecture",
-              "text": "Pure domain with zero external dependencies. Ports & adapters for DB, HTTP, gRPC, OIDC."
+              "text": "Pure domain with minimal external dependencies. Ports and adapters for storage, HTTP, and background jobs."
             },
             "testingAsSpecification": {
               "name": "Isolation by Default",
-              "text": "Tenant isolation enforced in the database with RLS FORCE. Untrusted code runs sandboxed in WASM with metered fuel."
+              "text": "Tenant isolation at the database where the project supports it, combined with application-level checks. Projects such as Aegis explore capability-based sandboxing for untrusted code."
             },
             "nativeObservability": {
               "name": "Verifiable by Construction",
-              "text": "Signed receipts and hash-chained audit. Every agent action leaves verifiable proof."
+              "text": "Some projects explore signed execution receipts and hash-chained audit trails to make specific operations easier to inspect and verify."
             },
             "simplicityOverCleverness": {
               "name": "Evaluate Before You Trust",
-              "text": "Declarative specs, authorization oracles and regression gates in CI. Agent behavior is tested, not assumed."
+              "text": "Declarative specs, authorization oracles, and regression checks. Agent behavior is tested rather than assumed."
             },
             "livingDocumentation": {
               "name": "Living Documentation",
@@ -148,27 +148,27 @@
     "stack": {
       "languages": {
         "label": "LANGUAGES",
-        "text": "Go (primary) \u00b7 Rust \u00b7 Python"
+        "text": "Go (primary) \u00b7 Rust"
       },
       "runtimeInfra": {
         "label": "RUNTIME / INFRA",
-        "text": "Kubernetes \u00b7 NATS \u00b7 PostgreSQL \u00b7 Redis \u00b7 SQLite"
+        "text": "PostgreSQL \u00b7 Redis \u00b7 SQLite"
       },
       "security": {
         "label": "SECURITY",
-        "text": "SPIFFE/SPIRE \u00b7 OPA/Cedar \u00b7 sigstore/cosign \u00b7 WASM (wasmtime)"
+        "text": "JWT (ES256) \u00b7 Argon2id"
       },
       "observability": {
         "label": "OBSERVABILITY",
-        "text": "OpenTelemetry \u00b7 Prometheus \u00b7 Grafana \u00b7 Loki \u00b7 Tempo"
+        "text": "Prometheus \u00b7 structured logging"
       },
       "testing": {
         "label": "TESTING",
-        "text": "testify \u00b7 ginkgo \u00b7 quickcheck \u00b7 testcontainers"
+        "text": "testify \u00b7 testcontainers \u00b7 race detector \u00b7 integration tests"
       },
       "tooling": {
         "label": "TOOLING",
-        "text": "sqlc \u00b7 buf/protobuf \u00b7 golangci-lint \u00b7 gofumpt \u00b7 direnv"
+        "text": "sqlc \u00b7 pgx \u00b7 Chi \u00b7 Cargo \u00b7 Docker Compose \u00b7 golangci-lint"
       }
     },
     "certifications": {

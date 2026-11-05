@@ -51,7 +51,7 @@
     },
     "portfolio": {
       "title": "Mi portfolio",
-      "subtitle": "Go \u00b7 IAM \u00b7 PostgreSQL/RLS \u00b7 Sistemas distribuidos",
+      "subtitle": "Go \u00b7 IAM \u00b7 PostgreSQL \u00b7 Sistemas distribuidos",
       "cta": "Ver todo en GitHub"
     },
     "blog": {
@@ -67,23 +67,23 @@
           "items": {
             "securityFirst": {
               "name": "Seguridad primero",
-              "text": "Modelado de amenazas desde el d\u00eda 0. Seguridad basada en capacidades, zero-trust, m\u00ednimo privilegio por defecto."
+              "text": "Modelado de amenazas desde el d\u00eda uno. M\u00ednimo privilegio, acceso basado en capacidades y defensa en profundidad."
             },
             "hexagonalArchitecture": {
               "name": "Arquitectura hexagonal",
-              "text": "Dominio puro con cero dependencias externas. Puertos y adaptadores para BD, HTTP, gRPC, OIDC."
+              "text": "Dominio puro con m\u00ednimas dependencias externas. Puertos y adaptadores para almacenamiento, HTTP y trabajos en segundo plano."
             },
             "testingAsSpecification": {
               "name": "Aislamiento por defecto",
-              "text": "Aislamiento de tenants en la base de datos con RLS FORCE. C\u00f3digo no confiable en sandbox WASM con fuel medido."
+              "text": "Aislamiento de tenants en la base de datos cuando el proyecto lo soporta, combinado con verificaciones a nivel de aplicaci\u00f3n. Proyectos como Aegis exploran sandboxing basado en capacidades para c\u00f3digo no confiable."
             },
             "nativeObservability": {
               "name": "Verificable por dise\u00f1o",
-              "text": "Recibos firmados y auditor\u00eda con hash encadenado. Cada acci\u00f3n del agente deja evidencia verificable."
+              "text": "Algunos proyectos exploran receipts de ejecuci\u00f3n firmados y auditor\u00edas con hash encadenado para facilitar la inspecci\u00f3n y verificaci\u00f3n de operaciones concretas."
             },
             "simplicityOverCleverness": {
               "name": "Evaluar antes de confiar",
-              "text": "Specs declarativos, or\u00e1culos de autorizaci\u00f3n y gates de regresi\u00f3n en CI. Comportamiento del agente probado, no supuesto."
+              "text": "Specs declarativos, or\u00e1culos de autorizaci\u00f3n y verificaciones de regresi\u00f3n. El comportamiento del agente se prueba, no se supone."
             },
             "livingDocumentation": {
               "name": "Documentaci\u00f3n viva",
@@ -148,27 +148,27 @@
     "stack": {
       "languages": {
         "label": "LENGUAJES",
-        "text": "Go (principal) \u00b7 Rust \u00b7 Python"
+        "text": "Go (principal) \u00b7 Rust"
       },
       "runtimeInfra": {
         "label": "RUNTIME / INFRA",
-        "text": "Kubernetes \u00b7 NATS \u00b7 PostgreSQL \u00b7 Redis \u00b7 SQLite"
+        "text": "PostgreSQL \u00b7 Redis \u00b7 SQLite"
       },
       "security": {
         "label": "SEGURIDAD",
-        "text": "SPIFFE/SPIRE \u00b7 OPA/Cedar \u00b7 sigstore/cosign \u00b7 WASM (wasmtime)"
+        "text": "JWT (ES256) \u00b7 Argon2id"
       },
       "observability": {
         "label": "OBSERVABILIDAD",
-        "text": "OpenTelemetry \u00b7 Prometheus \u00b7 Grafana \u00b7 Loki \u00b7 Tempo"
+        "text": "Prometheus \u00b7 logging estructurado"
       },
       "testing": {
         "label": "PRUEBAS",
-        "text": "testify \u00b7 ginkgo \u00b7 quickcheck \u00b7 testcontainers"
+        "text": "testify \u00b7 testcontainers \u00b7 race detector \u00b7 pruebas de integraci\u00f3n"
       },
       "tooling": {
         "label": "HERRAMIENTAS",
-        "text": "sqlc \u00b7 buf/protobuf \u00b7 golangci-lint \u00b7 gofumpt \u00b7 direnv"
+        "text": "sqlc \u00b7 pgx \u00b7 Chi \u00b7 Cargo \u00b7 Docker Compose \u00b7 golangci-lint"
       }
     },
     "certifications": {
