@@ -2336,6 +2336,11 @@ html[data-notfound-locale='es'] [data-notfound-locale='en'] {
     padding-top: var(--space-4);
   }
 
+  /* Neutralize the global github-link margin only inside the mobile menu. */
+  #mobile-menu .mobile-menu-social .social-link {
+    margin: 0;
+  }
+
   /* Cloned social links: keep the 18px icon but give the tap target 44px. */
   .mobile-menu-social .social-link,
   .contact-footer-social .social-link {
