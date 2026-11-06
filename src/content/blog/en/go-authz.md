@@ -260,22 +260,6 @@ Integration tests require Docker (testcontainers). That is an environment requir
 3. **The most valuable tests assert exact behavior, not approximate success.** Exact query counts and exact concurrency outcomes catch regressions that "it passed" never would.
 
 Go Authz is a portfolio project that solves a real problem with a defensible architecture. It is not a production system as-is, and it does not pretend to be one. The honest account of what is built, what is tested, and what is missing is the point of the project.  
-|<|start|>assistant to=write<|channel|>analysis <|constrain|>xml<|message|><rfl:parameter name="content">
----
-title: "Go Authz: diseño de autenticación y autorización para sistemas multi-tenant"
-excerpt: "Un servicio Go interno para identidad multi-tenant: refresh tokens opacos rotativos con detección de reutilización, rotación de claves ES256, Argon2id y autorización resuelta en dos consultas a la base de datos — incluyendo los bugs cross-tenant que el proceso de revisión detectó."
-date: "2026-11-06T00:00:00Z"
-tags: ["SECURITY", "AUTHENTICATION", "GO", "POSTGRESQL", "MULTI-TENANT"]
-draft: false
-translationKey: "go-authz"
-lang: "es"
----
-
-Cualquier sistema con más de un servicio interno termina necesitando una respuesta compartida a tres preguntas incómodas: cuánto tiempo sigue siendo útil una sesión robada, cómo se mantiene aislado el dato de un tenant del de otro, y dónde preguntan los demás servicios "¿está permitido esto?". Construí **Go Authz** como un servicio interno de autenticación y autorización para sistemas multi-tenant — no como un proveedor OIDC completo, no como una librería, y no como una plataforma que pretenda resolver problemas que el código no resuelve en realidad.
-
-El alcance se fijó a propósito: sesiones que se recuperan solas ante un robo, aislamiento de tenant forzado por más que un `WHERE tenant_id = ?`, y un único lugar para preguntar si un usuario puede realizar una acción. Todo lo demás — service accounts, métricas, tracing, alta disponibilidad — se nombra como trabajo futuro o se deja fuera deliberadamente.
-
----
 
 ---
 
