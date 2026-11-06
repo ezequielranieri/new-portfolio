@@ -52,11 +52,11 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
     "@playwright/test": "^1.48.0",
-    "@types/node": "^26.6.5",
+    "@types/node": "^26.6.6",
     "playwright-core": "^1.48.0",
     "pngjs": "^7.0.0",
-    "typescript": "^6.0.3",
-    "vitest": "^5.0.5"
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.0"
   },
   "overrides": {
     "path-to-regexp": "^6.3.0",
