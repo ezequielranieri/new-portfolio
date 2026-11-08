@@ -307,7 +307,9 @@ const HOW_I_WORK: HIWCategory[] = [
               <BlogRow item={item} locale={locale} number={index + 1} headingLevel={3} />
             ))}
           </div>
-          <a class="blog-cta btn" href={url('/blog', undefined, locale)}>{t('home.blog.cta')}</a>
+          <div class="blog-cta-wrapper">
+            <a class="blog-cta btn" href={url('/blog', undefined, locale)}>{t('home.blog.cta')}</a>
+          </div>
         </>
       ) : (
         <p class="blog-subtitle blog-empty-home">{t('home.blog.emptyHome')}</p>
@@ -867,6 +869,12 @@ const HOW_I_WORK: HIWCategory[] = [
       min-height: 65px;
       display: flex;
       align-items: center;
+      justify-content: center;
+    }
+
+    /* Center the “View all articles” CTA without altering .btn or global rules. */
+    .blog-cta-wrapper {
+      display: flex;
       justify-content: center;
     }
 
