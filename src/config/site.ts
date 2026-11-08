@@ -22,6 +22,14 @@ export const PROJECT_REPOS = {
   allProjects: 'https://github.com/ezequielranieri?tab=repositories',
 };
 
+// URLs for the homepage featured cards. Kept separate from PROJECT_REPOS so a
+// featured project does not automatically gain a GitHub link on its article.
+export const FEATURED_PROJECT_REPOS = {
+  aegis: PROJECT_REPOS.aegis,
+  goAuthz: 'https://github.com/ezequielranieri/go-authz',
+  goDurableJobs: 'https://github.com/ezequielranieri/go-durable-jobs',
+};
+
 // Blog configuration
 export const BLOG = {
   postsPerPage: 10,

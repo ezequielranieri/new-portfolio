@@ -297,8 +297,8 @@ const IDENTICAL_ALLOWLIST = new Map([
   // project-name (4)
   ['home.projects.aegis.name', 'project-name'],
   ['home.projects.aegis.label', 'project-name'],
-  ['home.projects.agentGateway.name', 'project-name'],
-  ['home.projects.mettle.name', 'project-name'],
+  ['home.projects.goAuthz.name', 'project-name'],
+  ['home.projects.goDurableJobs.name', 'project-name'],
 
   // cert-name (4)
   ['home.certifications.developingSecureSoftware.name', 'cert-name'],

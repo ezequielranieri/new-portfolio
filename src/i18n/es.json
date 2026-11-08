@@ -40,13 +40,13 @@
         "name": "AEGIS",
         "label": "Secure WASM runtime"
       },
-      "agentGateway": {
-        "name": "AGENT GATEWAY",
-        "label": "Gateway de agentes"
+      "goAuthz": {
+        "name": "GO AUTHZ",
+        "label": "Auth y authz multi-tenant"
       },
-      "mettle": {
-        "name": "METTLE",
-        "label": "Evaluaci\u00f3n y safety de agentes"
+      "goDurableJobs": {
+        "name": "GO DURABLE JOBS",
+        "label": "Cola de jobs en PostgreSQL"
       }
     },
     "portfolio": {

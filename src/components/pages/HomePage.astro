@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getHomepagePosts } from '@/lib/blog';
-import { PROJECT_REPOS, SOCIAL, CONTACT_EMAIL, CONTACT_LOCATION } from '@/config/site';
+import { FEATURED_PROJECT_REPOS, SOCIAL, CONTACT_EMAIL, CONTACT_LOCATION } from '@/config/site';
 import { url, absoluteUrl } from '@/lib/url';
 import SiteHeader from '@/components/SiteHeader.astro';
 import BackToTop from '@/components/BackToTop.astro';
@@ -24,8 +24,8 @@ const homeJsonLd = buildHomeJsonLd(locale, t('hero.role'), t('home.meta.descript
 // the server skips verification, so local development needs no credentials.
 const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 
-// Project repo URLs — centralised in config
-const REPOS = PROJECT_REPOS;
+// Homepage featured project URLs — centralised in config
+const REPOS = FEATURED_PROJECT_REPOS;
 
 // The three newest posts, newest first — the same order and the same
 // numbering the blog index and the article page use.
@@ -189,8 +189,8 @@ const HOW_I_WORK: HIWCategory[] = [
         </span>
         </a>
 
-        <!-- 02 · AGENT GATEWAY (centre, flagship) -->
-        <a class="project-card project-card--featured chrome-border-hover" href={REPOS.agentGateway} target="_blank" rel="noopener noreferrer">
+        <!-- 02 · GO AUTHZ (centre, flagship) -->
+        <a class="project-card project-card--featured chrome-border-hover" href={REPOS.goAuthz} target="_blank" rel="noopener noreferrer">
           <span class="project-card-inner">
             <span class="project-card-head">
             <span class="project-card-index">02</span>
@@ -224,14 +224,14 @@ const HOW_I_WORK: HIWCategory[] = [
             </svg>
           </span>
           <span class="project-card-meta">
-            <span class="project-card-name">{t('home.projects.agentGateway.name')}</span>
-            <span class="project-card-label">{t('home.projects.agentGateway.label')}</span>
+            <span class="project-card-name">{t('home.projects.goAuthz.name')}</span>
+            <span class="project-card-label">{t('home.projects.goAuthz.label')}</span>
           </span>
         </span>
         </a>
 
-        <!-- 03 · METTLE -->
-        <a class="project-card chrome-border-hover" href={REPOS.mettle} target="_blank" rel="noopener noreferrer">
+        <!-- 03 · GO DURABLE JOBS -->
+        <a class="project-card chrome-border-hover" href={REPOS.goDurableJobs} target="_blank" rel="noopener noreferrer">
           <span class="project-card-inner">
             <span class="project-card-head">
             <span class="project-card-index">03</span>
@@ -269,8 +269,8 @@ const HOW_I_WORK: HIWCategory[] = [
             </svg>
           </span>
           <span class="project-card-meta">
-            <span class="project-card-name">{t('home.projects.mettle.name')}</span>
-            <span class="project-card-label">{t("home.projects.mettle.label")}</span>
+            <span class="project-card-name">{t('home.projects.goDurableJobs.name')}</span>
+            <span class="project-card-label">{t('home.projects.goDurableJobs.label')}</span>
           </span>
         </span></a>
       </div>
