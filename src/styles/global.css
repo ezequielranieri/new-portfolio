@@ -870,7 +870,16 @@ body {
      breathing room below the fixed header. */
   --card-w: clamp(9.375rem, 15.5vw, 15rem);
   --card-w-center: calc(var(--card-w) * 1.1);
-  --card-h-center: calc(var(--card-w-center) * 4 / 3);
+  /* Height is a floor, not a ratio. The width term keeps the cards proportional
+     on wide screens; the 22rem floor reserves room for the longest EN/ES name
+     and label when the cards are narrow (around 1024px). The internal grid
+     absorbs any extra room in the illustration row, and a card may still grow
+     if its copy genuinely needs more space. */
+  --card-h-side: max(calc(var(--card-w) * 1.55), 22rem);
+  /* The centre card adds the first row track (10% of the side floor) on top of
+     the sides, so its hierarchy never depends on which translation happens to
+     wrap to more lines. */
+  --card-h-center: calc(var(--card-h-side) * 1.1);
   --card-pad: 1.25rem;
   --card-gap: clamp(1rem, 2vw, 2rem);
   --title-band: calc(var(--card-h-center) * 0.15);
@@ -891,12 +900,19 @@ body {
   align-items: center;
 }
 
-/* Bottom-aligned row: the taller centre card starts higher */
+/* Three explicit columns and two rows. Both side cards live in the second row,
+   so the row track gives them the same height; the centre card spans both rows,
+   so it is taller by exactly the first row (10% of the side floor) with no row
+   gap, and still grows with its own copy. All three bottom edges share the
+   second row end. */
 .project-row {
-  display: flex;
-  align-items: flex-end;
+  display: grid;
+  grid-template-columns: var(--card-w) var(--card-w-center) var(--card-w);
+  grid-template-rows: calc(var(--card-h-side) * 0.1) auto;
+  align-items: stretch;
   justify-content: center;
-  gap: var(--card-gap);
+  column-gap: var(--card-gap);
+  row-gap: 0;
   width: 100%;
 }
 
@@ -904,9 +920,13 @@ body {
   position: relative;
   display: flex;
   flex-direction: column;
+  grid-row: 2;
   flex-shrink: 0;
   width: var(--card-w);
-  aspect-ratio: 4 / 5;
+  /* min-height is a floor, not a cap: the internal grid lets the illustration
+     absorb spare room, while content can still grow the card if it truly needs
+     more space (nothing is clipped or hidden). */
+  min-height: var(--card-h-side);
   /* Bottom padding reserves the title band so no card text sits under the title */
   padding: var(--card-pad) var(--card-pad) calc(var(--title-band) + 0.75rem);
   background: var(--surface);
@@ -917,14 +937,23 @@ body {
   transition: background-color var(--transition-normal), border-color var(--transition-normal);
 }
 
+/* Header / illustration / metadata rows. The illustration row takes the spare
+   height (minmax(0, 1fr)) so the SVG's intrinsic ratio can never dictate the
+   card height, while the metadata row stays pinned to the bottom. */
 .project-card-inner {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  row-gap: 0.75rem;
+  flex: 1;
+  min-height: 0;
   transition: transform var(--transition-fast);
   /* No transform on hover - keeping layout stable */
 }
 
 .project-card--featured {
+  grid-row: 1 / span 2;
   width: var(--card-w-center);
-  aspect-ratio: 3 / 4;
+  min-height: var(--card-h-center);
 }
 
 .project-card:focus-visible {
@@ -959,11 +988,19 @@ body {
 
 .project-card-art {
   display: flex;
-  flex: 1;
   align-items: center;
   justify-content: center;
+  /* A square drawing surface sized by the card width and capped at 12rem. The
+     square comes from the container, not from the SVG's viewBox, so all three
+     illustrations share one stable scale and the viewBox never sets the card
+     height. The grid row still absorbs spare space around it. */
+  width: min(100%, 12rem);
+  aspect-ratio: 1 / 1;
+  max-height: 100%;
+  margin-inline: auto;
+  align-self: center;
+  justify-self: center;
   min-height: 0;
-  padding: 1rem 0;
 }
 
 .project-card-art svg {
@@ -2484,6 +2521,8 @@ html[data-notfound-locale='es'] [data-notfound-locale='en'] {
      peeks into view; the scrollbar is hidden. */
   .project-row {
     order: 3;
+    display: flex;
+    align-items: stretch;
     width: 100%;
     justify-content: flex-start;
     gap: 1rem;
@@ -2499,15 +2538,12 @@ html[data-notfound-locale='es'] [data-notfound-locale='en'] {
     display: none;
   }
 
-  /* AGENT GATEWAY (the featured card) leads the mobile carousel. Order is a
-     layout-only change inside this query, so the desktop row is untouched. */
-  .project-card--featured {
-    order: -1;
-  }
-
+  /* DOM order is the reading order: Aegis, Go Authz, Go Durable Jobs. No
+     visual re-ordering, so the dots map to the same three cards. */
   .project-card,
   .project-card--featured {
     width: min(78vw, 340px);
+    min-height: clamp(20rem, 82vw, 24rem);
     scroll-snap-align: start;
     /* No title overlap on mobile, so the reserved title band goes away. */
     padding-bottom: var(--card-pad);
@@ -3871,7 +3907,16 @@ html[data-notfound-locale='es'] [data-notfound-locale='en'] {
 .project-card:focus-visible .project-card-github a {
   color: var(--text);
 }
-a[href*="github.com"]:not(.article-github) { margin-right: 2rem; margin-top: 1rem; }
+/* GitHub links used to receive a global 2rem/1rem margin. That leaked into the
+   project cards (which are GitHub anchors themselves), the portfolio CTA and the
+   social icons. Spacing now belongs to each context: the cards are grid items,
+   the CTA keeps its own `.portfolio-cta` margin, and the social links use the
+   flex gap of their container. */
+.fixed-social .social-link,
+.mobile-menu-social .social-link,
+.contact-footer-social .social-link {
+  margin: 0;
+}
 
 .form-privacy-new {
   font-size: var(--micro-size);

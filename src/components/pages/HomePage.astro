@@ -174,12 +174,19 @@ const HOW_I_WORK: HIWCategory[] = [
             </svg>
           </span>
           <span class="project-card-art" aria-hidden="true">
-            <svg viewBox="0 0 120 120" fill="none" stroke="#e8e8ea" stroke-width="1" xmlns="http://www.w3.org/2000/svg">
-              <rect x="6.5" y="6.5" width="107" height="107" opacity="0.3" />
-              <rect x="20.5" y="20.5" width="79" height="79" opacity="0.5" />
-              <rect x="34.5" y="34.5" width="51" height="51" />
-              <rect x="48.5" y="48.5" width="23" height="23" />
+            <svg viewBox="0 0 120 120" fill="none" stroke="#e8e8ea" stroke-width="1" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <!-- Sandbox: outer boundary, isolation boundary, module and core,
+                   with one gated output leaving the inner boundary. -->
+              <g opacity="0.3">
+                <rect x="7.5" y="7.5" width="105" height="105" />
+              </g>
+              <g opacity="0.55">
+                <rect x="27.5" y="27.5" width="65" height="65" />
+                <path d="M27.5 60H7.5M60 27.5V7.5M60 92.5V112.5" />
+              </g>
+              <rect x="47.5" y="47.5" width="25" height="25" />
               <rect x="55" y="55" width="10" height="10" fill="#e8e8ea" stroke="none" />
+              <path d="M92.5 60h16M100.5 55.5v9M104.5 56l4.5 4-4.5 4" />
             </svg>
           </span>
           <span class="project-card-meta">
@@ -199,28 +206,26 @@ const HOW_I_WORK: HIWCategory[] = [
             </svg>
           </span>
           <span class="project-card-art" aria-hidden="true">
-            <svg viewBox="0 0 160 140" fill="none" stroke="#e8e8ea" stroke-width="1" xmlns="http://www.w3.org/2000/svg">
+            <svg viewBox="0 0 120 120" fill="none" stroke="#e8e8ea" stroke-width="1" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <!-- Two tenant boundaries feed identity squares into a policy
+                   gate; one lane resolves to an allowed node, the other to a
+                   denied cross. -->
               <g opacity="0.3">
-                <rect x="4.5" y="16.5" width="9" height="9" />
-                <rect x="4.5" y="48.5" width="9" height="9" />
-                <rect x="4.5" y="80.5" width="9" height="9" />
-                <rect x="4.5" y="112.5" width="9" height="9" />
-                <rect x="146.5" y="16.5" width="9" height="9" />
-                <rect x="146.5" y="48.5" width="9" height="9" />
-                <rect x="146.5" y="80.5" width="9" height="9" />
-                <rect x="146.5" y="112.5" width="9" height="9" />
+                <rect x="7.5" y="7.5" width="105" height="105" />
+                <rect x="15.5" y="17.5" width="31" height="26" />
+                <rect x="15.5" y="76.5" width="31" height="26" />
               </g>
-              <g opacity="0.45">
-                <path d="M13.5 21 60.5 58" />
-                <path d="M13.5 53 60.5 67" />
-                <path d="M13.5 85 60.5 77" />
-                <path d="M13.5 117 60.5 86" />
-                <path d="M146.5 21 99.5 58" />
-                <path d="M146.5 53 99.5 67" />
-                <path d="M146.5 85 99.5 77" />
-                <path d="M146.5 117 99.5 86" />
+              <g opacity="0.55">
+                <rect x="21.5" y="26.5" width="8" height="8" />
+                <rect x="33.5" y="26.5" width="8" height="8" />
+                <rect x="21.5" y="85.5" width="8" height="8" />
+                <rect x="33.5" y="85.5" width="8" height="8" />
+                <path d="M46.5 30.5h8M46.5 89.5h8M65.5 30.5h13M65.5 89.5h13" />
               </g>
-              <rect x="60.5" y="52.5" width="39" height="39" />
+              <path d="M54.5 12.5v95M65.5 12.5v95" />
+              <rect x="56.5" y="56.5" width="7" height="7" transform="rotate(45 60 60)" />
+              <rect x="80.5" y="26.5" width="8" height="8" fill="#e8e8ea" stroke="none" />
+              <path d="M81 86.5l9 9M90 86.5l-9 9" />
             </svg>
           </span>
           <span class="project-card-meta">
@@ -240,32 +245,29 @@ const HOW_I_WORK: HIWCategory[] = [
             </svg>
           </span>
           <span class="project-card-art" aria-hidden="true">
-            <svg viewBox="0 0 120 120" fill="none" stroke="#e8e8ea" stroke-width="1" xmlns="http://www.w3.org/2000/svg">
+            <svg viewBox="0 0 120 120" fill="none" stroke="#e8e8ea" stroke-width="1" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <!-- Durable pipeline: job queue, two workers, PostgreSQL storage
+                   and a retry loop back into the queue. -->
               <g opacity="0.3">
-                <rect x="12.5" y="12.5" width="12" height="12" />
-                <rect x="36.5" y="12.5" width="12" height="12" />
-                <rect x="60.5" y="12.5" width="12" height="12" />
-                <rect x="84.5" y="12.5" width="12" height="12" />
-                <rect x="12.5" y="36.5" width="12" height="12" />
-                <rect x="36.5" y="36.5" width="12" height="12" />
-                <rect x="60.5" y="36.5" width="12" height="12" />
-                <rect x="84.5" y="36.5" width="12" height="12" />
-                <rect x="12.5" y="60.5" width="12" height="12" />
-                <rect x="36.5" y="60.5" width="12" height="12" />
-                <rect x="60.5" y="60.5" width="12" height="12" />
-                <rect x="84.5" y="60.5" width="12" height="12" />
-                <rect x="12.5" y="84.5" width="12" height="12" />
-                <rect x="36.5" y="84.5" width="12" height="12" />
-                <rect x="60.5" y="84.5" width="12" height="12" />
-                <rect x="84.5" y="84.5" width="12" height="12" />
-                <path d="M12 104H108" />
+                <rect x="7.5" y="7.5" width="105" height="105" />
+                <path d="M18.5 40.5h95" />
               </g>
-              <rect x="36.5" y="12.5" width="12" height="12" fill="#e8e8ea" stroke="none" />
-              <rect x="60.5" y="36.5" width="12" height="12" fill="#e8e8ea" stroke="none" />
-              <rect x="12.5" y="60.5" width="12" height="12" fill="#e8e8ea" stroke="none" />
-              <rect x="84.5" y="84.5" width="12" height="12" fill="#e8e8ea" stroke="none" />
-              <path d="M12 104H54" />
-              <path d="M54 99V109" />
+              <g opacity="0.55">
+                <rect x="18.5" y="18.5" width="12" height="12" />
+                <rect x="40.5" y="18.5" width="12" height="12" />
+                <rect x="62.5" y="18.5" width="12" height="12" />
+                <rect x="84.5" y="18.5" width="12" height="12" />
+                <path d="M24.5 30.5v10M46.5 30.5v10M68.5 30.5v10M90.5 30.5v10" />
+                <path d="M37.5 40.5v10M80.5 40.5v10" />
+                <path d="M34.5 87.5c0 3 11.4 5.5 25.5 5.5s25.5-2.5 25.5-5.5" />
+              </g>
+              <rect x="31.5" y="50.5" width="12" height="12" />
+              <rect x="74.5" y="50.5" width="12" height="12" />
+              <path d="M37.5 62.5v18M80.5 62.5v18" />
+              <path d="M34.5 80.5v18c0 3 11.4 5.5 25.5 5.5s25.5-2.5 25.5-5.5v-18" />
+              <ellipse cx="60" cy="80.5" rx="25.5" ry="5.5" />
+              <path d="M85.5 98.5h16V31.5h-5M101 28l-4.5 3.5 4.5 3.5" />
+              <rect x="40.5" y="18.5" width="12" height="12" fill="#e8e8ea" stroke="none" />
             </svg>
           </span>
           <span class="project-card-meta">
@@ -737,12 +739,9 @@ const HOW_I_WORK: HIWCategory[] = [
       if (!row || !dotsWrap) return;
 
       const dots = Array.from(dotsWrap.querySelectorAll('.portfolio-dot'));
-      // Visual order: the featured card carries `order: -1` on mobile, so sort by
-      // the resolved order value (a stable sort keeps the two plain cards in DOM
-      // order).
-      const cards = Array.from(row.querySelectorAll('.project-card')).sort(
-        (a, b) => (parseInt(getComputedStyle(a).order, 10) || 0) - (parseInt(getComputedStyle(b).order, 10) || 0)
-      );
+      // DOM order is the visual order on mobile (Aegis, Go Authz, Go Durable
+      // Jobs), so dots and cards map one-to-one without re-sorting.
+      const cards = Array.from(row.querySelectorAll('.project-card'));
       if (!cards.length || cards.length !== dots.length) return;
 
       const prefersReduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches; // i18n-ignore

@@ -28,7 +28,10 @@
     "xProfile": "Perfil de X",
     "backToTop": "Volver arriba",
     "closeMenu": "Cerrar men\u00fa",
-    "menuOpen": "Abrir men\u00fa"
+    "menuOpen": "Abrir men\u00fa",
+    "project1of3": "Proyecto 1 de 3: Aegis",
+    "project2of3": "Proyecto 2 de 3: Go Authz",
+    "project3of3": "Proyecto 3 de 3: Go Durable Jobs"
   },
   "home": {
     "meta": {
