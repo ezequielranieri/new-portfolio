@@ -19,6 +19,8 @@ export const PROJECT_REPOS = {
   aegis: 'https://github.com/ezequielranieri/aegis',
   agentGateway: 'https://github.com/ezequielranieri/agent-gateway',
   mettle: 'https://github.com/ezequielranieri/mettle',
+  goAuthz: 'https://github.com/ezequielranieri/go-authz',
+  goDurableJobs: 'https://github.com/ezequielranieri/go-durable-jobs',
   allProjects: 'https://github.com/ezequielranieri?tab=repositories',
 };
 

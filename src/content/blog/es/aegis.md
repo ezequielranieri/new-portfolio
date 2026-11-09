@@ -8,7 +8,7 @@ lang: "es"
 translationKey: "aegis"
 ---
 
-Ejecutar WebAssembly no confiable solo es seguro cuando cada acceso a recursos está gateado y cada side effect es comprobable. Construí **aegis** como un runtime Rust que aplica un modelo de seguridad fail-closed a la ejecución WASM: capability-based host functions en lugar de WASI, receipts firmados y hash-chained (Ed25519 + BLAKE3) que prueban qué ejecutó, con qué resultado y a qué costo, ejecución en dos fases (prepare/commit/abort) para que intención y resultado sean ambos comprobables, y límites duros de recursos (memoria 1 MiB, fuel metering, epoch interruption) — todo expuesto vía gRPC con mTLS mutuo.
+Ejecutar WebAssembly no confiable solo es seguro cuando cada acceso a recursos está gateado y cada side effect es comprobable. Construí **aegis** como un runtime Rust que aplica un modelo de seguridad fail-closed a la ejecución WASM: capability-based host functions en lugar de WASI, receipts firmados y hash-chained (Ed25519 + BLAKE3) que prueban qué ejecutó, con qué resultado y a qué costo, ejecución en dos fases (prepare/commit/abort) para que intención y resultado sean ambos comprobables, y límites duros de recursos (memoria 1 MiB, límites de tablas/instancias/memorias, epoch interruption) plus fuel metering para contabilidad de CPU por ejecución en receipts — todo expuesto vía gRPC con mTLS mutuo.
 
 ---
 
@@ -73,7 +73,7 @@ El runtime es declarativo: un TOML configura server, TLS identity, signing key, 
 
 ```
 ┌──────────────┐     mTLS gRPC      ┌────────────────────────────────┐
-│  agent-gateway │ ───────────────▶ │  aegis-runtime (Rust)            │
+│ cliente gRPC externo │ ───────────────▶ │  aegis-runtime (Rust)            │
 │  or any client │                  │  ┌────────────────────────────┐  │
 └──────────────┘                    │  │ Execute / Prepare / Commit │  │
                                      │  │ Verify / GetReceiptChain   │  │

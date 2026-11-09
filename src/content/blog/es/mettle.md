@@ -3,7 +3,7 @@ title: "Mettle: evaluación declarativa y safety framework para agentes LLM"
 excerpt: "Un framework de evaluación y safety en Go que mide y controla agentes LLM sistemáticamente: specs declarativas YAML como oráculo, authorization oracles, visibility checks fail-closed con logging, métricas determinísticas y LLM-as-judge, regression store SQLite y CI gates."
 date: "2026-10-25T00:00:00Z"
 tags: ["AI SECURITY", "LLM EVALUATION", "GO", "SQLITE", "TESTING"]
-draft: false
+draft: true
 lang: "es"
 translationKey: "mettle"
 ---

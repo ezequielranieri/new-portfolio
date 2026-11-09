@@ -27,8 +27,8 @@ const ROUTES = [
   { path: '/es/', locale: 'es', status: [200] },
   { path: '/blog/', locale: 'en', status: [200] },
   { path: '/es/blog/', locale: 'es', status: [200] },
-  { path: '/blog/agent-gateway/', locale: 'en', status: [200] },
-  { path: '/es/blog/agent-gateway/', locale: 'es', status: [200] },
+  { path: '/blog/go-durable-jobs/', locale: 'en', status: [200] },
+  { path: '/es/blog/go-durable-jobs/', locale: 'es', status: [200] },
   { path: '/404/', locale: 'en', status: [200, 404] },
   { path: '/es/404/', locale: 'es', status: [200, 404] },
 ];

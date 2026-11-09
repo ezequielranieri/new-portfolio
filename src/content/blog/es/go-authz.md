@@ -1,6 +1,6 @@
 ---
 title: "Go Authz: diseño de autenticación y autorización para sistemas multi-tenant"
-excerpt: "Un servicio Go interno para identidad multi-tenant: refresh tokens opacos rotativos con detección de reutilización, rotación de claves ES256, Argon2id y autorización resuelta en dos consultas a la base de datos — incluyendo los bugs cross-tenant que el proceso de revisión detectó."
+excerpt: "Un servicio Go interno para identidad multi-tenant: refresh tokens opacos rotativos con detección de reutilización, rotación de claves ES256, Argon2id y autorización resuelta en dos consultas a la base de datos para un usuario existente y activo — incluyendo los bugs cross-tenant que el proceso de revisión detectó."
 date: "2026-11-06T00:00:00Z"
 tags: ["SECURITY", "AUTHENTICATION", "GO", "POSTGRESQL", "MULTI-TENANT"]
 draft: false
@@ -173,7 +173,7 @@ El trigger lanza un SQLSTATE dedicado (`AUTH1`), no el genérico `P0001`, para q
 
 Los permisos son pares `resource:action` (por ejemplo, `invoices:read`) y forman un único catálogo global compartido entre tenants. Lo que varía por tenant es qué roles tienen qué permisos, no los permisos mismos. Crear un permiso es idempotente (get-or-create); asignarlo a un rol requiere que ya exista, así que un typo no puede contaminar un catálogo compartido.
 
-`/authorize` resuelve el acceso en dos consultas a la base de datos sin importar cuántos roles tenga el usuario: una para cargar el usuario, otra para cargar el conjunto deduplicado de permisos.
+`/authorize` resuelve el acceso en dos consultas a la base de datos para un usuario existente y activo — una para cargar el usuario, otra para cargar el conjunto deduplicado de permisos — sin importar cuántos roles tenga el usuario. Otros caminos (usuario desconocido, usuario suspendido, entrada inválida) pueden resolverse con menos o ninguna consulta.
 
 ```go
 func (uc *AuthorizeUseCase) Authorize(ctx context.Context, userID uuid.UUID, resource, action string) (bool, error) {

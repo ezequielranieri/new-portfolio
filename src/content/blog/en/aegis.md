@@ -7,7 +7,7 @@ draft: false
 translationKey: "aegis"
 ---
 
-Running untrusted WebAssembly is only safe when every resource access is gated and every side effect is provable. I built **aegis** as a Rust runtime that applies a fail-closed security model to WASM execution: capability-based host functions instead of WASI, signed and hash-chained receipts (Ed25519 + BLAKE3) that prove what executed, with what result and at what cost, two-phase execution (prepare/commit/abort) so intent and result are both provable, and hard resource limits (1 MiB memory, fuel metering, epoch interruption) — all exposed over gRPC with mutual TLS.
+Running untrusted WebAssembly is only safe when every resource access is gated and every side effect is provable. I built **aegis** as a Rust runtime that applies a fail-closed security model to WASM execution: capability-based host functions instead of WASI, signed and hash-chained receipts (Ed25519 + BLAKE3) that prove what executed, with what result and at what cost, two-phase execution (prepare/commit/abort) so intent and result are both provable, and hard resource limits (1 MiB memory, table/instance/memory limits, epoch interruption) plus fuel metering for per-execution CPU accounting in receipts — all exposed over gRPC with mutual TLS.
 
 ---
 
@@ -72,7 +72,7 @@ The runtime is declarative: a TOML file configures the server, TLS identity, sig
 
 ```
 ┌─────────────────┐    mTLS gRPC     ┌──────────────────────────────────┐
-│  agent-gateway  │ ───────────────▶ │  aegis-runtime (Rust)            │
+│ external gRPC client │ ───────────────▶ │  aegis-runtime (Rust)            │
 │  or any client  │                  │  ┌────────────────────────────┐  │
 └─────────────────┘                  │  │ Execute / Prepare / Commit │  │
                                      │  │ Verify / GetReceiptChain   │  │

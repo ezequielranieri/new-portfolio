@@ -5,7 +5,7 @@ date: "2026-10-23T00:00:00Z"
 # Optional, edited by hand when the article is revised (YYYY-MM-DD).
 # updatedDate: YYYY-MM-DD
 tags: ["AI SECURITY", "MULTI-TENANT", "GO", "POSTGRESQL", "WASM"]
-draft: false
+draft: true
 translationKey: "agent-gateway"
 ---
 

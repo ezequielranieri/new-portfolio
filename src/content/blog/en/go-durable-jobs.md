@@ -3,7 +3,7 @@ title: "Go Durable Jobs: Building a PostgreSQL-Backed Job Processor in Go"
 excerpt: "A Go job processor built on PostgreSQL: idempotent enqueue, concurrent claiming with SELECT ... FOR UPDATE SKIP LOCKED, exponential retries with jitter, a logical dead-letter queue, graceful shutdown, and Prometheus metrics — with explicit limits and no overclaimed guarantees."
 date: "2026-11-06T00:00:00Z"
 tags: ["GO", "POSTGRESQL", "CONCURRENCY", "BACKEND", "OBSERVABILITY"]
-draft: true
+draft: false
 translationKey: "go-durable-jobs"
 lang: "en"
 ---
@@ -292,12 +292,7 @@ TEST_DATABASE_URL="postgres://jobs:jobs@127.0.0.1:5434/jobs_test?sslmode=disable
   go test -tags integration -race ./internal/infrastructure/postgres/
 ```
 
-Results:
-
-- 49 unit tests pass (application 20, domain 4, handler 19, worker 5, telemetry 1).
-- 3 integration tests pass under `-race` (`HappyPath`, `FindByID`, `Requeue`).
-- Build and vet are clean.
-- No CI exists for this repository: there is no `.github/` directory, so none of this runs automatically.
+Test files exist covering application (20), domain (4), handler (19), worker (5), telemetry (1), and integration (HappyPath, FindByID, Requeue). The author reports having run them successfully locally — unit tests, integration tests under `-race`, `go build`, and `go vet`. These results were not re-verified during this audit, and the repository has no CI (no `.github/` directory) to run them automatically.
 
 Integration tests require a reachable PostgreSQL with `TEST_DATABASE_URL` → `DATABASE_URL` → default `jobs_test` on port 5433, and truncate the `jobs` table at the start of each test. Without a database they skip with `t.Skip`.
 

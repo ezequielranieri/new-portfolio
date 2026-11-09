@@ -51,6 +51,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
+    "@astrojs/sitemap": "^3.7.4",
     "@playwright/test": "^1.48.0",
     "@types/node": "^26.6.5",
     "playwright-core": "^1.48.0",

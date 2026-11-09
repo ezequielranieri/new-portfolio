@@ -3,7 +3,7 @@ title: "Go Durable Jobs: construcción de un procesador de trabajos asíncronos 
 excerpt: "Un procesador de jobs en Go sobre PostgreSQL: encolado idempotente, claim concurrente con SELECT ... FOR UPDATE SKIP LOCKED, reintentos exponenciales con jitter, dead letter lógico, apagado graceful y métricas Prometheus, con límites explícitos y sin garantías sobredimensionadas."
 date: "2026-11-06T00:00:00Z"
 tags: ["GO", "POSTGRESQL", "CONCURRENCY", "BACKEND", "OBSERVABILITY"]
-draft: true
+draft: false
 translationKey: "go-durable-jobs"
 lang: "es"
 ---
@@ -292,12 +292,7 @@ TEST_DATABASE_URL="postgres://jobs:jobs@127.0.0.1:5434/jobs_test?sslmode=disable
   go test -tags integration -race ./internal/infrastructure/postgres/
 ```
 
-Resultados:
-
-- 49 tests unitarios pasan (application 20, domain 4, handler 19, worker 5, telemetry 1).
-- 3 tests de integración pasan bajo `-race` (`HappyPath`, `FindByID`, `Requeue`).
-- Build y vet limpios.
-- No existe CI para este repositorio: no hay directorio `.github/`, así que nada de esto se ejecuta automáticamente.
+Existen archivos de prueba que cubren application (20), domain (4), handler (19), worker (5), telemetry (1) e integración (HappyPath, FindByID, Requeue). El autor informa haberlos ejecutado satisfactoriamente en un entorno local — pruebas unitarias, pruebas de integración bajo `-race`, `go build` y `go vet`. Estos resultados no fueron re-verificados durante esta auditoría, y el repositorio no tiene CI (no hay directorio `.github/`) que los ejecute automáticamente.
 
 Los tests de integración requieren un PostgreSQL accesible con la cadena `TEST_DATABASE_URL` → `DATABASE_URL` → default `jobs_test` en el puerto 5433, y hacen `TRUNCATE` de la tabla `jobs` al inicio de cada test. Sin base de datos hacen `t.Skip`.
 

@@ -11,7 +11,7 @@ function ok(label, cond) {
   else { failures += 1; console.log('FAIL ' + label); }
 }
 
-const routes = ['/', '/es/', '/blog/', '/es/blog/', '/blog/agent-gateway/', '/es/blog/agent-gateway/', '/404/', '/es/404/'];
+const routes = ['/', '/es/', '/blog/', '/es/blog/', '/blog/go-durable-jobs/', '/es/blog/go-durable-jobs/', '/404/', '/es/404/'];
 
 for (const route of routes) {
   const res = await fetch(new URL(route, BASE).href);

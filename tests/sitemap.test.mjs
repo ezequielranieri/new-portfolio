@@ -12,7 +12,7 @@ function ok(label, cond) {
 }
 
 const xml = await (async () => {
-  const res = await fetch(new URL('sitemap.xml', BASE).href);
+  const res = await fetch(new URL('sitemap-0.xml', BASE).href);
   return res.text();
 })();
 

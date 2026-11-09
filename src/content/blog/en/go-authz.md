@@ -1,6 +1,6 @@
 ---
 title: "Go Authz: Building Authentication and Authorization for Multi-Tenant Systems"
-excerpt: "An internal Go service for tenant-scoped identity: opaque rotating refresh tokens with reuse detection, ES256 key rotation, Argon2id, and authorization resolved in two database queries — including the cross-tenant bugs the review process caught."
+excerpt: "An internal Go service for tenant-scoped identity: opaque rotating refresh tokens with reuse detection, ES256 key rotation, Argon2id, and authorization resolved in two database queries for an existing, active user — including the cross-tenant bugs the review process caught."
 date: "2026-11-06T00:00:00Z"
 tags: ["SECURITY", "AUTHENTICATION", "GO", "POSTGRESQL", "MULTI-TENANT"]
 draft: false
@@ -173,7 +173,7 @@ The trigger raises a dedicated SQLSTATE (`AUTH1`), not the generic `P0001`, so a
 
 Permissions are `resource:action` pairs (for example, `invoices:read`) and form a single global catalog shared across tenants. What varies per tenant is which roles hold which permissions, not the permissions themselves. Creating a permission is idempotent (get-or-create); assigning one to a role requires it to already exist, so a typo cannot pollute a shared catalog.
 
-`/authorize` resolves access in two database queries regardless of how many roles the user has: one to load the user, one to load the deduplicated permission set.
+`/authorize` resolves access in two database queries for an existing, active user — one to load the user, one to load the deduplicated permission set — regardless of how many roles the user has. Other paths (unknown user, suspended user, malformed input) may resolve with fewer or zero queries.
 
 ```go
 func (uc *AuthorizeUseCase) Authorize(ctx context.Context, userID uuid.UUID, resource, action string) (bool, error) {

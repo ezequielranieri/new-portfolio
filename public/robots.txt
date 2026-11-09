@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ezequielranieri.vercel.app/sitemap.xml
+Sitemap: https://ezequielranieri.vercel.app/sitemap-index.xml

@@ -4,7 +4,7 @@ excerpt: "Un control plane multi-tenant para agentes LLM con cero bypass, aislam
 date: "2026-10-23T00:00:00Z"
 # Opcional, se edita a mano cuando el artículo se revisa (YYYY-MM-DD).
 tags: ["AI SECURITY", "MULTI-TENANT", "GO", "POSTGRESQL", "WASM"]
-draft: false
+draft: true
 translationKey: "agent-gateway"
 lang: "es"
 ---

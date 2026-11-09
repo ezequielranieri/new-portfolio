@@ -54,11 +54,10 @@ export function blogIndexPath(locale: Locale): string {
  */
 export async function getBlogPosts(locale: Locale = DEFAULT_LOCALE): Promise<BlogPost[]> {
   const posts = await getCollection('blog');
-  const isProduction = import.meta.env.PROD;
 
   return posts
     .filter((post) => splitId(post.id).locale === locale)
-    .filter((post) => !isProduction || !post.data.draft)
+    .filter((post) => !post.data.draft)
     .map((post) => {
       const { slug } = splitId(post.id);
       const repoKey = slug.replace(/-([a-z0-9])/g, (_, c) => c.toUpperCase()) as keyof typeof PROJECT_REPOS;
@@ -267,8 +266,7 @@ export interface BlogEntry {
  */
 export async function getBlogEntries(locale: Locale): Promise<BlogEntry[]> {
   const all = await getCollection('blog');
-  const isProduction = import.meta.env.PROD;
-  const visible = all.filter((entry) => !isProduction || !entry.data.draft);
+  const visible = all.filter((entry) => !entry.data.draft);
 
   const indexEntries = (entries: typeof visible) => {
     const map = new Map<string, (typeof visible)[number]>();
